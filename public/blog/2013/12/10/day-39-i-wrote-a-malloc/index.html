@@ -1,0 +1,157 @@
+
+<!DOCTYPE html>
+
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8">
+<title>Day 39: Writing malloc wrong, for fun - Polina Soshnin</title>
+<meta name="author" content="Julia Evans">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="description" content="Day 39: Writing malloc wrong, for fun">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="https://jvns.ca/blog/2013/12/10/day-39-i-wrote-a-malloc/">
+<link href="/favicon.ico" rel="icon">
+<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+<link href="/atom.xml" rel="alternate" title="Julia Evans" type="application/atom+xml">
+ 
+<link href="https://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='https://fonts.googleapis.com/css?family=Montserrat:700,400' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Alegreya:400,900,700' rel='stylesheet' type='text/css'>
+</head>
+<body>
+<div id="wrap">
+<header role="banner">
+<hgroup>
+<h1><a href="/">Polina Soshnin</a></h1>
+</hgroup>
+<ul class="header-links">
+<span><li><a href="/about">About</a></li>
+<li><a href="/projects">Projects</a></li></span>
+    <li><a href="https://github.com/polinadotio">Github</a></li></span>
+    <li><a href="https://www.linkedin.com/in/polinasoshnin">LinkedIn</a></li></span>
+</ul>
+</header>
+<nav role="navigation" class="header-nav"><ul class="main-navigation">
+<li><a href="/categories/favorite/">Favorites</a></li>
+<li><a href="/zines">Zines</a></li>
+</ul>
+</nav>
+<div id="main">
+<div id="content">
+
+<div>
+<article class="hentry" role="article">
+<header>
+<h1 class="entry-title">Day 39: Writing malloc wrong, for fun</h1>
+
+<div class="post-tags">
+  
+  •
+  
+    <a class="post-tag" href="/categories/kernel">kernel</a> 	•
+  
+    <a class="post-tag" href="/categories/hackerschool">hackerschool</a> 	•
+  
+    <a class="post-tag" href="/categories/rust">rust</a> 	•
+  
+  
+</div>
+<p class="meta">
+<time datetime="2013-12-10T00:00:00" pubdate data-updated="true"></time>
+</p>
+</header>
+<div class="entry-content">
+     <p>My major achievement for today is writing the following five lines of
+code:</p>
+
+<pre><code>let a: ~u8 = ~('A' as u8);
+stdio::putc(*a);
+let b: ~u8 = ~('B' as u8);
+stdio::putc(*a);
+stdio::putc(*b);
+</code></pre>
+
+<p>and having them do the wrong thing. One would normally expect this to
+print &ldquo;AAB&rdquo;. But for me, right now, until I stop goofing off, it
+prints &ldquo;ABB&rdquo;. Why is that?</p>
+
+<p>Well, it&rsquo;s because my <code>malloc</code> implementation looks like this:</p>
+
+<pre><code>static mut base: uint = 0x200000;
+pub extern &quot;C&quot; fn malloc(len: uint) -&gt; *mut u8 {
+    unsafe {
+        let ret: uint = base;
+        return base as *mut u8;
+   }
+}
+</code></pre>
+
+<p>This means that every time I allocate memory, I get the same pointer
+back, and so <code>a</code> and <code>b</code> will always be equal no matter what. And for
+that matter any variable I create will always have the same value.
+This is of course a terrible idea in real life, but it is <em>really
+fun</em>.</p>
+
+<p>Here&rsquo;s my real <code>malloc</code> function (that causes the above code to print
+&ldquo;AAB&rdquo;, like it should):</p>
+
+<pre><code>pub extern &quot;C&quot; fn malloc(len: uint) -&gt; *mut u8 {
+    unsafe {
+        let ret: uint = base;
+        base += len + size_of::&lt;uint&gt;();
+
+        // Align next allocation to 4-byte boundary.
+        if(base % 4 != 0) {
+            base += 4 - (base % 4);
+        }
+
+        *(base as *mut uint) = len;
+
+        return (ret + size_of::&lt;uint&gt;()) as *mut u8;
+    }
+}
+
+pub extern &quot;C&quot; fn free(ptr: *mut u8) {
+    // meh.
+}
+</code></pre>
+
+<p>The hardest part about this was not actually writing <code>malloc</code>. Writing
+<code>malloc</code> is easy, as long as you never need to free memory. I also
+just wrote this by copying it from a C implementation. You just need
+to keep a counter and keep incrementing it.</p>
+
+<p>The hard part was getting the type of the function right, because Rust
+:). This is entirely made up for by being able to play silly memory
+games.</p>
+
+</div>
+<footer>
+<div class="sharing">
+<a href="http://twitter.com/share" class="twitter-share-button" data-url="https://jvns.ca/blog/2013/12/10/day-39-i-wrote-a-malloc/" data-via="b0rk" data-counturl="https://jvns.ca/blog/2013/12/10/day-39-i-wrote-a-malloc/">Tweet</a>
+</div>
+<p class="meta">
+   
+    <a class="basic-alignment left" href="https://jvns.ca/blog/2013/12/12/day-41-linkers-are-still-upsetting/" title="Previous Post: Day 41: Linkers are upsetting">Day 41: Linkers are upsetting</a>
+  
+   
+    <a class="basic-alignment right" href="https://jvns.ca/blog/2013/12/10/day-40-12-things-i-learned-today-about-linkers/" title="Previous Post: Day 40: 12 things I learned today about linkers.">Day 40: 12 things I learned today about linkers.</a>
+  
+</p>
+</footer>
+</article>
+</div>
+
+</div>
+</div>
+<nav role="navigation" class="footer-nav"> <a href="/">Archives</a>
+</nav>
+<footer role="contentinfo"><span class="credit">&copy; 2016 Polina Soshnin.
+</footer>
+</div>
+</body>
+</html>
+

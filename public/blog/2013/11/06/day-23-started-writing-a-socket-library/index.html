@@ -1,0 +1,144 @@
+
+<!DOCTYPE html>
+
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8">
+<title>Day 23: Started writing a TCP stack in Python - Polina Soshnin</title>
+<meta name="author" content="Julia Evans">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="description" content="Day 23: Started writing a TCP stack in Python">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="https://jvns.ca/blog/2013/11/06/day-23-started-writing-a-socket-library/">
+<link href="/favicon.ico" rel="icon">
+<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+<link href="/atom.xml" rel="alternate" title="Julia Evans" type="application/atom+xml">
+ 
+<link href="https://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='https://fonts.googleapis.com/css?family=Montserrat:700,400' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Alegreya:400,900,700' rel='stylesheet' type='text/css'>
+</head>
+<body>
+<div id="wrap">
+<header role="banner">
+<hgroup>
+<h1><a href="/">Polina Soshnin</a></h1>
+</hgroup>
+<ul class="header-links">
+<span><li><a href="/about">About</a></li>
+<li><a href="/projects">Projects</a></li></span>
+    <li><a href="https://github.com/polinadotio">Github</a></li></span>
+    <li><a href="https://www.linkedin.com/in/polinasoshnin">LinkedIn</a></li></span>
+</ul>
+</header>
+<nav role="navigation" class="header-nav"><ul class="main-navigation">
+<li><a href="/categories/favorite/">Favorites</a></li>
+<li><a href="/zines">Zines</a></li>
+</ul>
+</nav>
+<div id="main">
+<div id="content">
+
+<div>
+<article class="hentry" role="article">
+<header>
+<h1 class="entry-title">Day 23: Started writing a TCP stack in Python</h1>
+
+<div class="post-tags">
+  
+  •
+  
+    <a class="post-tag" href="/categories/hackerschool">hackerschool</a> 	•
+  
+  
+</div>
+<p class="meta">
+<time datetime="2013-11-06T00:00:00" pubdate data-updated="true"></time>
+</p>
+</header>
+<div class="entry-content">
+     <p>For the last couple of days I&rsquo;ve been trying to understand how TCP
+works, because networking is really fun. Yesterday I realized that I
+really hadn&rsquo;t been writing as much code as I want to be, though.</p>
+
+<p>So I&rsquo;ve started working on a mini TCP stack! I&rsquo;m not sure yet how far
+this will go, but so far I&rsquo;m running into tons of problems, so I think
+this might be a good choice.</p>
+
+<p>The code so far is at
+<a href="https://github.com/jvns/teeceepee">https://github.com/jvns/teeceepee</a>.</p>
+
+<p>Here are the parameters:</p>
+
+<ul>
+<li>Built on top of <a href="http://www.secdev.org/projects/scapy/">scapy</a>, so I
+don&rsquo;t have to actually know how the bits of a TCP packet are put
+together</li>
+<li>I do, however, need to use raw sockets in order to be able to send TCP
+packets, so everything has to run as root</li>
+</ul>
+
+<p>So far I have</p>
+
+<ul>
+<li>A <code>TCPSocket</code> class, which manages connections to servers and keeps some
+state. Right now my states are <code>CLOSED</code>, <code>SYN-SENT</code>, and
+<code>ESTABLISHED</code>. I&rsquo;m using <a href="http://www.tcpipguide.com/free/t_TCPOperationalOverviewandtheTCPFiniteStateMachineF-2.htm">this diagram</a>
+as a reference.</li>
+<li>A <code>TCPListener</code> class, which is responsible for managing all the
+sockets that might be open. Basically it has a dictionary that maps
+ports to <code>TCPSocket</code> instances. I have no idea if this is actually how
+socket libraries work.</li>
+</ul>
+
+<p>There&rsquo;s a thread that listens for packets that are coming in and sends
+them off to the appropriate <code>TCPSocket</code> instance for handling, using the
+<code>dispatch</code> method. This is my first time using threads pretty much ever.
+Expecting all the problems. The listener thread starts when I import the
+<code>tcp</code> module and ends when the program importing it ends.</p>
+
+<p>Right now I can</p>
+
+<ul>
+<li>establish a connection (send a TCP handshake)</li>
+<li>send some data (but not parse the response)</li>
+</ul>
+
+<p>Tomorrow I&rsquo;m hoping to be able to tear down a connection properly and
+assemble the packets I&rsquo;m receiving into some actual data.</p>
+
+<p>One of the things that is the most challenging so far is that I keep
+starting and stopping the library, so there are all kinds of connections
+that just die. Also I think the servers I&rsquo;m interacting with think I&rsquo;m
+unreliable, so sometimes they send me packets slowly.</p>
+
+</div>
+<footer>
+<div class="sharing">
+<a href="http://twitter.com/share" class="twitter-share-button" data-url="https://jvns.ca/blog/2013/11/06/day-23-started-writing-a-socket-library/" data-via="b0rk" data-counturl="https://jvns.ca/blog/2013/11/06/day-23-started-writing-a-socket-library/">Tweet</a>
+</div>
+<p class="meta">
+   
+    <a class="basic-alignment left" href="https://jvns.ca/blog/2013/11/06/day-22-got-some-tcp-packets-back/" title="Previous Post: Day 22: Got some TCP packets back!">Day 22: Got some TCP packets back!</a>
+  
+   
+    <a class="basic-alignment right" href="https://jvns.ca/blog/2013/11/06/nyc-python-talk-slides/" title="Previous Post: NYC Python talk">NYC Python talk</a>
+  
+</p>
+</footer>
+</article>
+</div>
+
+</div>
+</div>
+<nav role="navigation" class="footer-nav"> <a href="/">Archives</a>
+</nav>
+<footer role="contentinfo"><span class="credit">&copy; 2016 Polina Soshnin.
+</footer>
+</div>
+</body>
+</html>
+

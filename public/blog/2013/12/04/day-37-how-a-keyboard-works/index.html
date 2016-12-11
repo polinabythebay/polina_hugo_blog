@@ -1,0 +1,175 @@
+
+<!DOCTYPE html>
+
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8">
+<title>Day 37: After 5 days, my OS doesn&#39;t crash when I press a key - Polina Soshnin</title>
+<meta name="author" content="Julia Evans">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="description" content="Day 37: After 5 days, my OS doesn&#39;t crash when I press a key">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="https://jvns.ca/blog/2013/12/04/day-37-how-a-keyboard-works/">
+<link href="/favicon.ico" rel="icon">
+<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+<link href="/atom.xml" rel="alternate" title="Julia Evans" type="application/atom+xml">
+ 
+<link href="https://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='https://fonts.googleapis.com/css?family=Montserrat:700,400' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Alegreya:400,900,700' rel='stylesheet' type='text/css'>
+</head>
+<body>
+<div id="wrap">
+<header role="banner">
+<hgroup>
+<h1><a href="/">Polina Soshnin</a></h1>
+</hgroup>
+<ul class="header-links">
+<span><li><a href="/about">About</a></li>
+<li><a href="/projects">Projects</a></li></span>
+    <li><a href="https://github.com/polinadotio">Github</a></li></span>
+    <li><a href="https://www.linkedin.com/in/polinasoshnin">LinkedIn</a></li></span>
+</ul>
+</header>
+<nav role="navigation" class="header-nav"><ul class="main-navigation">
+<li><a href="/categories/favorite/">Favorites</a></li>
+<li><a href="/zines">Zines</a></li>
+</ul>
+</nav>
+<div id="main">
+<div id="content">
+
+<div>
+<article class="hentry" role="article">
+<header>
+<h1 class="entry-title">Day 37: After 5 days, my OS doesn&#39;t crash when I press a key</h1>
+
+<div class="post-tags">
+  
+  •
+  
+    <a class="post-tag" href="/categories/kernel">kernel</a> 	•
+  
+    <a class="post-tag" href="/categories/favorite">favorite</a> 	•
+  
+    <a class="post-tag" href="/categories/rust">rust</a> 	•
+  
+    <a class="post-tag" href="/categories/hackerschool">hackerschool</a> 	•
+  
+  
+</div>
+<p class="meta">
+<time datetime="2013-12-04T00:00:00" pubdate data-updated="true"></time>
+</p>
+</header>
+<div class="entry-content">
+     
+
+<p>Right now I&rsquo;m working towards being able to:</p>
+
+<ol>
+<li>press keys on my keyboard</li>
+<li>having the OS not crash</li>
+<li>and have the key I pressed be echoed back</li>
+</ol>
+
+<p>I just achieved step 2, and this has been kind of a saga, so here&rsquo;s an
+explanation of the blood and tears involved. First up, some resources
+that really helped me out:</p>
+
+<ul>
+<li>The fantastic <a href="http://wiki.osdev.org/Main_Page">OSDev wiki</a>.</li>
+<li>This
+<a href="http://www.osdever.net/bkerndev/Docs/idt.htm">tutorial on how to make a basic x86 kernel</a>,
+especially the IDT page.</li>
+<li>This <a href="https://github.com/pcmattman/rustic/">other Rust kernel</a>,
+mostly for Rust coding style.</li>
+<li>Most of all: the OSDev wiki page
+<a href="http://wiki.osdev.org/I_Cant_Get_Interrupts_Working">&ldquo;I Can&rsquo;t Get Interrupts Working&rdquo;</a>.
+Read this three times every time you have a problem. For real.</li>
+</ul>
+
+<p>So here&rsquo;s how I did it. There were a lot of pitfalls. Notably absent
+are the hours I spent in the Rust IRC channel being confused about
+types.</p>
+
+<h3 id="how-to-get-interrupts-working-julia-s-way">How To Get Interrupts Working, Julia&rsquo;s Way</h3>
+
+<ol>
+<li>Create a Global Descriptor Table (GDT) and load it (<a href="https://github.com/jvns/rustboot/blob/b845c49358e6f789636a0ce763406fa5200403a5/src/loader.asm#L67">source</a>)</li>
+<li><a href="http://wiki.osdev.org/Protected_mode">Switch from Real Mode to Protected Mode</a>.
+This involves turning interrupts off (<code>cli</code>).</li>
+<li>Create a Interrupt Descriptor Table (IDT) and load it.</li>
+<li>Put interrupt handlers into my table.</li>
+<li>Press keys. Nothing happens. Hours pass. Realize interrupts are
+turned off and I need to turn them on.</li>
+<li>Turn interrupts on (<code>sti</code>).</li>
+<li>Press a key. The OS crashes. Continue experimenting in this
+vein for some time. Still crashing.</li>
+<li>Take the advice from <a href="http://wiki.osdev.org/I_Cant_Get_Interrupts_Working">&ldquo;I Can&rsquo;t Get Interrupts Working&rdquo;</a>
+and trigger the interrupts <strong>manually</strong> (with <code>int 1</code>) before
+turning interrupts back on and trying it for real. Get my interrupt
+descriptor table not broken. Sweet.</li>
+<li>Turn interrupts on (<code>sti</code>).</li>
+<li>The OS AGAIN crashes every time i press a key. Read &ldquo;I Can&rsquo;t
+Get Interrupts Working&rdquo; again. This is called &ldquo;I&rsquo;m receiving EXC9
+instead of IRQ1 when striking a key?!&rdquo; Feel on top of this.</li>
+<li><a href="http://wiki.osdev.org/PIC">Remap the PIC</a> so that interrupt <code>i</code>
+gets mapped to <code>i + 32</code>, because of an Intel design bug. This
+<em>basically</em> looks like just typing in a bunch of random numbers,
+but it works.</li>
+<li>THE OS IS STILL CRASHING WHEN I PRESS A KEY. This continues for 2
+days.</li>
+<li>Remember that now that I have remapped interrupt 1 to interrupt 33
+and I need to update my IDT.</li>
+<li>Update my IDT.</li>
+<li>Press a key. My interrupt handler runs. Practically faint with joy.</li>
+<li>But it only runs the first time I press a key, not the second
+time. This is the section &ldquo;I can only receive one IRQ&rdquo;</li>
+</ol>
+
+<p>As far as I can tell this is all totally normal and just how OS
+programming is. Or something. Hopefully by the end of the week I will
+get past &ldquo;I can only receive one IRQ&rdquo; and into &ldquo;My interrupt handler
+is the bomb and I can totally write a keyboard driver now&rdquo;.</p>
+
+<p>Then I&rsquo;m going to write a keyboard driver where in addition to doing
+normal keyboard driver things, it changes the screen colour every time
+I press a key. (<a href="http://kate.io">Kate</a>&rsquo;s idea)</p>
+
+<p>I&rsquo;m seriously amazed that operating systems exist and are available
+for free.</p>
+
+<p><strong>Edit:</strong> Thanks for all the help everyone! I&rsquo;ve solved &ldquo;It only runs
+the first time I press a key&rdquo; now and moved on to new problems :)</p>
+
+</div>
+<footer>
+<div class="sharing">
+<a href="http://twitter.com/share" class="twitter-share-button" data-url="https://jvns.ca/blog/2013/12/04/day-37-how-a-keyboard-works/" data-via="b0rk" data-counturl="https://jvns.ca/blog/2013/12/04/day-37-how-a-keyboard-works/">Tweet</a>
+</div>
+<p class="meta">
+   
+    <a class="basic-alignment left" href="https://jvns.ca/blog/2013/12/06/day-38-after-7-days/" title="Previous Post: Day 38: After 6 days, I have problems that I can&#39;t understand at all">Day 38: After 6 days, I have problems that I can&#39;t understand at all</a>
+  
+   
+    <a class="basic-alignment right" href="https://jvns.ca/blog/2013/12/03/day-36-programming-without-malloc/" title="Previous Post: Day 36: On programming without malloc">Day 36: On programming without malloc</a>
+  
+</p>
+</footer>
+</article>
+</div>
+
+</div>
+</div>
+<nav role="navigation" class="footer-nav"> <a href="/">Archives</a>
+</nav>
+<footer role="contentinfo"><span class="credit">&copy; 2016 Polina Soshnin.
+</footer>
+</div>
+</body>
+</html>
+

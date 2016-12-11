@@ -1,0 +1,160 @@
+
+<!DOCTYPE html>
+
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8">
+<title>Day 42: How to run a simple ELF executable, from scratch (I don&#39;t know) - Polina Soshnin</title>
+<meta name="author" content="Julia Evans">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="description" content="Day 42: How to run a simple ELF executable, from scratch (I don&#39;t know)">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="https://jvns.ca/blog/2013/12/13/day-42-how-to-run-an-elf-executable-i-dont-know/">
+<link href="/favicon.ico" rel="icon">
+<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+<link href="/atom.xml" rel="alternate" title="Julia Evans" type="application/atom+xml">
+ 
+<link href="https://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='https://fonts.googleapis.com/css?family=Montserrat:700,400' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Alegreya:400,900,700' rel='stylesheet' type='text/css'>
+</head>
+<body>
+<div id="wrap">
+<header role="banner">
+<hgroup>
+<h1><a href="/">Polina Soshnin</a></h1>
+</hgroup>
+<ul class="header-links">
+<span><li><a href="/about">About</a></li>
+<li><a href="/projects">Projects</a></li></span>
+    <li><a href="https://github.com/polinadotio">Github</a></li></span>
+    <li><a href="https://www.linkedin.com/in/polinasoshnin">LinkedIn</a></li></span>
+</ul>
+</header>
+<nav role="navigation" class="header-nav"><ul class="main-navigation">
+<li><a href="/categories/favorite/">Favorites</a></li>
+<li><a href="/zines">Zines</a></li>
+</ul>
+</nav>
+<div id="main">
+<div id="content">
+
+<div>
+<article class="hentry" role="article">
+<header>
+<h1 class="entry-title">Day 42: How to run a simple ELF executable, from scratch (I don&#39;t know)</h1>
+
+<div class="post-tags">
+  
+  •
+  
+    <a class="post-tag" href="/categories/hackerschool">hackerschool</a> 	•
+  
+    <a class="post-tag" href="/categories/kernel">kernel</a> 	•
+  
+  
+</div>
+<p class="meta">
+<time datetime="2013-12-13T00:00:00" pubdate data-updated="true"></time>
+</p>
+</header>
+<div class="entry-content">
+     
+
+<p>I want to compile a 32-bit &ldquo;Hello, world!&rdquo; statically-linked ELF
+binary for Linux, and try to run it in my
+<a href="http://github.com/jvns/puddle">operating system</a>. I&rsquo;m trying to
+understand what I&rsquo;ll have to do. The goal is to get everything just
+barely working, so that it will print the string to the screen and not
+crash the whole system.</p>
+
+<p>I asked a question about this a little while ago, and got
+<a href="https://gist.github.com/jvns/7688286/">lots of helpful responses</a>.
+Now I need to make it a bit more concrete, though.</p>
+
+<p>I&rsquo;ve discovered that this &ldquo;set stuff up so that a program can run&rdquo;
+business is called <strong>loading</strong>, and what I&rsquo;m doing is writing a
+<strong>loader</strong>. Sweet.</p>
+
+<p>Right now I&rsquo;m doing this before implementing paging and virtual memory
+and not after, because this seems more fun than virtual memory for
+now. If this is a very bad idea, I would like to know.</p>
+
+<h2 id="things-i-ll-have-to-do">Things I&rsquo;ll have to do</h2>
+
+<ol>
+<li>Compile &ldquo;hello-c&rdquo; for a 32-bit OS, with <code>gcc -m32 -static</code></li>
+<li>Parse the ELF headers (using
+<a href="https://en.wikipedia.org/wiki/Executable_and_Linkable_Format">the wikipedia article</a>,
+and
+<a href="https://code.google.com/p/corkami/wiki/ELF101">this great picture</a>
+as a reference)</li>
+<li>Add an interrupt handler for <code>int 80</code> (or <code>sysenter</code>, we&rsquo;ll see!),
+so that I can handle system calls.</li>
+<li>Write the actual system call implementations, as few as possible.</li>
+<li>Find <code>e_entry</code>, the entry point of the binary.</li>
+<li>Initialize registers? How?</li>
+<li>Change <em>something</em>, so that the memory addresses in the binary
+aren&rsquo;t broken. Maybe? I still don&rsquo;t 100% understand this.</li>
+<li>Finally: Jump to <code>_start</code>, the memory address in <code>e_entry</code>. I want
+to just do <code>jmp address</code> here. Then my program will run?</li>
+</ol>
+
+<h2 id="things-i-won-t-have-to-do-yet">Things I won&rsquo;t have to do (yet)</h2>
+
+<ol>
+<li>Read the file into memory &ndash; I&rsquo;m planning to just keep the file as
+a bunch of bytes in RAM to start, or possibly have a simple RAM
+filesystem later.</li>
+<li>Security, and making sure process can&rsquo;t trample on each others&rsquo;
+address spaces.</li>
+<li>Scheduling.</li>
+<li>Set up a special heap for the process. I&rsquo;m just going to allocate
+everyone&rsquo;s memory in the same part of physical memory for now. And
+never free. Yeah.</li>
+</ol>
+
+<h2 id="questions-i-have">Questions I have</h2>
+
+<ol>
+<li>Do I need to make sure my binary is
+<a href="http://www.airs.com/blog/archives/43">position independent</a>?</li>
+<li>Do I need to implement virtual memory &amp; paging? (I think not)</li>
+<li>Do I need to have a separate &ldquo;user space&rdquo; for the code to run in,
+or will it run in kernel space? (I think it will run in kernel
+space)</li>
+<li>Do I need to change something in the GOT and/or PLT to make the
+addresses work right? (I think yes? maybe?) Is there even a PLT in
+a static executable, or is that just for dynamic linking? Eep. Hmm.</li>
+</ol>
+
+</div>
+<footer>
+<div class="sharing">
+<a href="http://twitter.com/share" class="twitter-share-button" data-url="https://jvns.ca/blog/2013/12/13/day-42-how-to-run-an-elf-executable-i-dont-know/" data-via="b0rk" data-counturl="https://jvns.ca/blog/2013/12/13/day-42-how-to-run-an-elf-executable-i-dont-know/">Tweet</a>
+</div>
+<p class="meta">
+   
+    <a class="basic-alignment left" href="https://jvns.ca/blog/2013/12/16/day-43-hopefully-the-last-day-spent-fixing-linker-problems/" title="Previous Post: Day 43: SOMETHING IS ERASING MY PROGRAM WHILE IT’S RUNNING (oh wait oops)">Day 43: SOMETHING IS ERASING MY PROGRAM WHILE IT’S RUNNING (oh wait oops)</a>
+  
+   
+    <a class="basic-alignment right" href="https://jvns.ca/blog/2013/12/12/day-41-linkers-are-still-upsetting/" title="Previous Post: Day 41: Linkers are upsetting">Day 41: Linkers are upsetting</a>
+  
+</p>
+</footer>
+</article>
+</div>
+
+</div>
+</div>
+<nav role="navigation" class="footer-nav"> <a href="/">Archives</a>
+</nav>
+<footer role="contentinfo"><span class="credit">&copy; 2016 Polina Soshnin.
+</footer>
+</div>
+</body>
+</html>
+

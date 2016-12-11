@@ -1,0 +1,128 @@
+
+<!DOCTYPE html>
+
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8">
+<title>Debugging shared library problems with strace - Polina Soshnin</title>
+<meta name="author" content="Julia Evans">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="description" content="Debugging shared library problems with strace">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="https://jvns.ca/blog/2014/03/10/debugging-shared-library-problems-with-strace/">
+<link href="/favicon.ico" rel="icon">
+<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+<link href="/atom.xml" rel="alternate" title="Julia Evans" type="application/atom+xml">
+ 
+<link href="https://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='https://fonts.googleapis.com/css?family=Montserrat:700,400' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Alegreya:400,900,700' rel='stylesheet' type='text/css'>
+</head>
+<body>
+<div id="wrap">
+<header role="banner">
+<hgroup>
+<h1><a href="/">Polina Soshnin</a></h1>
+</hgroup>
+<ul class="header-links">
+<span><li><a href="/about">About</a></li>
+<li><a href="/projects">Projects</a></li></span>
+    <li><a href="https://github.com/polinadotio">Github</a></li></span>
+    <li><a href="https://www.linkedin.com/in/polinasoshnin">LinkedIn</a></li></span>
+</ul>
+</header>
+<nav role="navigation" class="header-nav"><ul class="main-navigation">
+<li><a href="/categories/favorite/">Favorites</a></li>
+<li><a href="/zines">Zines</a></li>
+</ul>
+</nav>
+<div id="main">
+<div id="content">
+
+<div>
+<article class="hentry" role="article">
+<header>
+<h1 class="entry-title">Debugging shared library problems with strace</h1>
+
+<div class="post-tags">
+  
+  •
+  
+    <a class="post-tag" href="/categories/strace">strace</a> 	•
+  
+    <a class="post-tag" href="/categories/kernel">kernel</a> 	•
+  
+  
+</div>
+<p class="meta">
+<time datetime="2014-03-10T20:46:10" pubdate data-updated="true"></time>
+</p>
+</header>
+<div class="entry-content">
+     <p>It&rsquo;s official. I have a love affair with strace.</p>
+
+<p>So strace is this Linux command that shows you what system calls a program
+calls.</p>
+
+<p>This doesn&rsquo;t sound so useful until you find out that it is useful FOR
+EVERYTHING. Seriously. strace is like an immersion blender. I use strace more
+than my immersion blender.</p>
+
+<p></p>
+
+<p>Previously we have used strace to
+<a href="http://jvns.ca/blog/2013/12/22/fun-with-strace/">find out how killall works</a>,
+<a href="http://jvns.ca/blog/2014/02/17/spying-on-ssh-with-strace/">spy on ssh</a>,
+<a href="http://jvns.ca/blog/2014/02/26/using-strace-to-avoid-reading-ruby-code/">avoid reading Ruby code</a>, and
+<a href="http://jvns.ca/blog/2014/02/27/more-practical-uses-for-strace/">more</a>.</p>
+
+<p>So today I had was trying to install the
+<a href="https://github.com/minad/iruby/">IRuby notebook</a>. But my version of libzmq was wrong! So I upgraded it. But it was STILL WRONG. Why? WHY?</p>
+
+<p>So I thought, I will get strace to tell me which shared libraries are being loaded! strace will never lie to me. Here&rsquo;s how to do that:</p>
+
+<pre><code>strace -f -o /tmp/iruby_problems ~/clones/iruby/bin/iruby notebook
+grep libzmq.so /tmp/iruby_problems | grep -v ENOENT
+</code></pre>
+
+<p>The <code>grep -v ENOENT</code> is because it looks everywhere in my LD_LIBRARY_PATH so it
+fails to find libzmq a bunch of times. This reveals the following two system
+calls:</p>
+
+<pre><code>28863 open(&quot;/opt/anaconda/lib/python2.7/site-packages/zmq/utils/../../../../libzmq.so.3&quot;, O_RDONLY|O_CLOEXEC) = 9
+28910 open(&quot;/usr/lib/libzmq.so&quot;, O_RDONLY|O_CLOEXEC) = 9
+</code></pre>
+
+<p>AH HA. The first libzmq is the right version (<code>libzmq.so.3</code>), but the second one is all wrong! It is <code>libzmq1</code> and it is a disaster and a disgrace. I did <code>sudo apt-get remove libzmq1</code> and the offending <code>libzmq</code> was banished from my system.</p>
+
+<p>Thanks, strace :)</p>
+</div>
+<footer>
+<div class="sharing">
+<a href="http://twitter.com/share" class="twitter-share-button" data-url="https://jvns.ca/blog/2014/03/10/debugging-shared-library-problems-with-strace/" data-via="b0rk" data-counturl="https://jvns.ca/blog/2014/03/10/debugging-shared-library-problems-with-strace/">Tweet</a>
+</div>
+<p class="meta">
+   
+    <a class="basic-alignment left" href="https://jvns.ca/blog/2014/03/12/the-rust-os-story/" title="Previous Post: Writing an OS in Rust in tiny steps (Steps 1-5)">Writing an OS in Rust in tiny steps (Steps 1-5)</a>
+  
+   
+    <a class="basic-alignment right" href="https://jvns.ca/blog/2014/03/10/help/" title="Previous Post: Hacker School&#39;s Secret Strategy for Being Super Productive (or: Help.)">Hacker School&#39;s Secret Strategy for Being Super Productive (or: Help.)</a>
+  
+</p>
+</footer>
+</article>
+</div>
+
+</div>
+</div>
+<nav role="navigation" class="footer-nav"> <a href="/">Archives</a>
+</nav>
+<footer role="contentinfo"><span class="credit">&copy; 2016 Polina Soshnin.
+</footer>
+</div>
+</body>
+</html>
+

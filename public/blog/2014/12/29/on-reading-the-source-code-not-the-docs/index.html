@@ -1,0 +1,156 @@
+
+<!DOCTYPE html>
+
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8">
+<title>On reading the source code, not the docs - Polina Soshnin</title>
+<meta name="author" content="Julia Evans">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="description" content="On reading the source code, not the docs">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="https://jvns.ca/blog/2014/12/29/on-reading-the-source-code-not-the-docs/">
+<link href="/favicon.ico" rel="icon">
+<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+<link href="/atom.xml" rel="alternate" title="Julia Evans" type="application/atom+xml">
+ 
+<link href="https://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='https://fonts.googleapis.com/css?family=Montserrat:700,400' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Alegreya:400,900,700' rel='stylesheet' type='text/css'>
+</head>
+<body>
+<div id="wrap">
+<header role="banner">
+<hgroup>
+<h1><a href="/">Polina Soshnin</a></h1>
+</hgroup>
+<ul class="header-links">
+<span><li><a href="/about">About</a></li>
+<li><a href="/projects">Projects</a></li></span>
+    <li><a href="https://github.com/polinadotio">Github</a></li></span>
+    <li><a href="https://www.linkedin.com/in/polinasoshnin">LinkedIn</a></li></span>
+</ul>
+</header>
+<nav role="navigation" class="header-nav"><ul class="main-navigation">
+<li><a href="/categories/favorite/">Favorites</a></li>
+<li><a href="/zines">Zines</a></li>
+</ul>
+</nav>
+<div id="main">
+<div id="content">
+
+<div>
+<article class="hentry" role="article">
+<header>
+<h1 class="entry-title">On reading the source code, not the docs</h1>
+
+<div class="post-tags">
+  
+</div>
+<p class="meta">
+<time datetime="2014-12-29T19:07:52" pubdate data-updated="true"></time>
+</p>
+</header>
+<div class="entry-content">
+     <p>In my first programming job, I worked at a <a href="http://evolvingweb.ca">web development company</a>
+and wrote modules for <a href="https://drupal.org">Drupal</a> sites.</p>
+
+<p>Every so often, I&rsquo;d need to understand some specific Drupal edge case
+(say, how the text in the tabs on a search page was determined). And it
+wouldn&rsquo;t be documented. And Stack Overflow didn&rsquo;t have any answers about
+it, and my <a href="http://twitter.com/tavarm">colleagues</a> didn&rsquo;t know. I like
+to think of this as a &ldquo;oh right I actually need to know how to program&rdquo;
+moment &ndash; nobody&rsquo;s going to tell me what to do, I just need to figure it
+out.</p>
+
+<p>The consultancy&rsquo;s cofounder was <a href="https://twitter.com/dergachev">Alex Dergachev</a>,
+and he taught me a really important thing! Whenever I had a question
+like this, he&rsquo;d tell me to just read Drupal&rsquo;s source code, and then I&rsquo;d
+know the answer. This is pretty obvious in retrospect, but it wasn&rsquo;t
+obvious to me at the time.</p>
+
+<p>I originally felt like Drupal was too complicated to understand (it&rsquo;s a
+big codebase!), but it turned out that if I tried I could usually figure
+out what I needed to know.</p>
+
+<p>This works particularly well when I understand pretty well what the code
+I&rsquo;m using is doing, but am just unsure about some particular detail.
+For example &ldquo;will this button appear for all users, or only admin
+users?&rdquo; I use this all the time at work, and most of you probably do
+too! There are always details about code that aren&rsquo;t exhaustively
+documented, and using grep to find answers is incredibly helpful.</p>
+
+<h3 id="but-sometimes-reading-the-code-doesn-t-work">But sometimes reading the code doesn&rsquo;t work.</h3>
+
+<p></p>
+
+<p>Recently I was writing a map reduce job, and there was an out of memory
+error. And it wasn&rsquo;t really obvious why, and I tried to look at the
+stack trace and read some relevant parts of the source code. And it
+just. did not. help. at. all.</p>
+
+<p>It turned out that I was doing a join, and the rows on the right side of
+the join were too big, and this was causing
+<a href="http://www.cascading.org/">Cascading</a> to be sad. But to understand
+that, it was important to understand how Cascading joins worked! And I
+didn&rsquo;t know that at all. Thankfully I work with
+<a href="https://twitter.com/avibryant">people</a>
+<a href="https://twitter.com/jeffbalogh">who</a>
+<a href="https://twitter.com/colinmarc">know</a>
+<a href="https://twitter.com/DanielleSucher">things</a>
+I don&rsquo;t know about Hadoop and they could help figure it out.</p>
+
+<p>So it seems like there are a few different levels of bug difficulty:</p>
+
+<ol>
+<li>It&rsquo;s immediately obvious to you what&rsquo;s wrong</li>
+<li>You Google the exception, read some documentation or Stack Overflow,
+and then it&rsquo;s immediately obvious what&rsquo;s wrong</li>
+<li>You don&rsquo;t know what&rsquo;s wrong, but you know more or less where in the
+(open source) library code you&rsquo;re using to look, and you can read the
+code to figure it out</li>
+<li>You&rsquo;re missing some bigger-picture of knowledge about the code you&rsquo;re
+running that you need to understand the bug (like me not
+understanding how joins work in Cascading).</li>
+</ol>
+
+<p>I still struggle with approaching problems in #4 (especially if I
+don&rsquo;t know that I don&rsquo;t know the Thing That I&rsquo;m Missing). For now, I
+just
+<a href="http://jvns.ca/blog/2014/06/13/asking-questions-is-a-superpower/http://jvns.ca/blog/2014/06/13/asking-questions-is-a-superpower/">ask</a>,
+and often the people I work with have answers, and are really helpful.</p>
+
+<p>I think if I couldn&rsquo;t do this, I&rsquo;d read a lot of documentation and hope
+that some of it was relevant. I&rsquo;d love more ideas, though. Or if you
+disagree with my hierarchy of bug difficulty that I made up 10 minutes
+ago and have your own, I&rsquo;d love to know that too :) :)</p>
+</div>
+<footer>
+<div class="sharing">
+<a href="http://twitter.com/share" class="twitter-share-button" data-url="https://jvns.ca/blog/2014/12/29/on-reading-the-source-code-not-the-docs/" data-via="b0rk" data-counturl="https://jvns.ca/blog/2014/12/29/on-reading-the-source-code-not-the-docs/">Tweet</a>
+</div>
+<p class="meta">
+   
+    <a class="basic-alignment left" href="https://jvns.ca/blog/2015/01/12/data-day-texas-2015/" title="Previous Post: Data Day Texas 2015">Data Day Texas 2015</a>
+  
+   
+    <a class="basic-alignment right" href="https://jvns.ca/blog/2014/12/28/programming-doesnt-belong-to-men-it-belongs-to-me/" title="Previous Post: Programming doesn&#39;t belong to men (it belongs to me)">Programming doesn&#39;t belong to men (it belongs to me)</a>
+  
+</p>
+</footer>
+</article>
+</div>
+
+</div>
+</div>
+<nav role="navigation" class="footer-nav"> <a href="/">Archives</a>
+</nav>
+<footer role="contentinfo"><span class="credit">&copy; 2016 Polina Soshnin.
+</footer>
+</div>
+</body>
+</html>
+

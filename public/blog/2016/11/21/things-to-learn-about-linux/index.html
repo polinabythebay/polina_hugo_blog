@@ -1,0 +1,163 @@
+
+<!DOCTYPE html>
+
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8">
+<title>Things to learn about Linux - Polina Soshnin</title>
+<meta name="author" content="Julia Evans">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="description" content="Things to learn about Linux">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="https://jvns.ca/blog/2016/11/21/things-to-learn-about-linux/">
+<link href="/favicon.ico" rel="icon">
+<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+<link href="/atom.xml" rel="alternate" title="Julia Evans" type="application/atom+xml">
+ 
+<link href="https://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='https://fonts.googleapis.com/css?family=Montserrat:700,400' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Alegreya:400,900,700' rel='stylesheet' type='text/css'>
+</head>
+<body>
+<div id="wrap">
+<header role="banner">
+<hgroup>
+<h1><a href="/">Polina Soshnin</a></h1>
+</hgroup>
+<ul class="header-links">
+<span><li><a href="/about">About</a></li>
+<li><a href="/projects">Projects</a></li></span>
+    <li><a href="https://github.com/polinadotio">Github</a></li></span>
+    <li><a href="https://www.linkedin.com/in/polinasoshnin">LinkedIn</a></li></span>
+</ul>
+</header>
+<nav role="navigation" class="header-nav"><ul class="main-navigation">
+<li><a href="/categories/favorite/">Favorites</a></li>
+<li><a href="/zines">Zines</a></li>
+</ul>
+</nav>
+<div id="main">
+<div id="content">
+
+<div>
+<article class="hentry" role="article">
+<header>
+<h1 class="entry-title">Things to learn about Linux</h1>
+
+<div class="post-tags">
+  
+</div>
+<p class="meta">
+<time datetime="2016-11-21T21:34:43" pubdate data-updated="true"></time>
+</p>
+</header>
+<div class="entry-content">
+     <p>I asked on Twitter today what Linux things they would like to know more
+about. I thought the replies were really cool so here&rsquo;s a list (many of
+them could be discussed on any Unixy OS, some of them are Linux-specific)</p>
+
+<ul>
+<li>tcp/ip &amp; networking stuff</li>
+<li>what is a port/socket?</li>
+<li>seccomp</li>
+<li>systemd</li>
+<li>IPC (interprocess communication, pipes)</li>
+<li>permissions, setuid, sticky bits, how does chown work</li>
+<li>how the shell uses fork &amp; exec</li>
+<li>how can I make my computer a router?</li>
+<li>process groups, session leaders, shell job control</li>
+<li>memory allocation, how do heaps work, what does malloc do?</li>
+<li>ttys, how do terminals work</li>
+<li>process scheduling</li>
+<li>drivers</li>
+<li>what&rsquo;s the difference between Linux and Unix</li>
+<li>the kernel</li>
+<li>modern X servers</li>
+<li>how does X11 work?</li>
+<li>Linux&rsquo;s zero-copy API (sendfile, splice, tee)</li>
+<li>what is dmesg even doing</li>
+<li>how kernel modules work</li>
+<li>embedded stuff: realtime, GPIO, etc</li>
+<li>btrfs</li>
+<li>QEMU/KVM</li>
+<li>shell redirection</li>
+<li>HAL</li>
+<li>chroot</li>
+<li>filesystems &amp; inodes</li>
+<li>what is RSS, how do I know how much memory my process is using</li>
+<li>iptables</li>
+<li>what is a network interface exactly?</li>
+<li>what is syslog and how does it work?</li>
+<li>how are logs usually organized?</li>
+<li>virtual memory</li>
+<li>BPF</li>
+<li>bootloader, initrd, kernel parameters</li>
+<li>the <code>ip</code> command</li>
+<li>what are all the files that are not file files (/dev, stdin, /proc,
+/sys)</li>
+<li>dbus</li>
+<li>sed and awk</li>
+<li>namespaces, cgroups, docker, SELinux, AppArmor</li>
+<li>debuggers</li>
+<li>what&rsquo;s the difference between threads and processes?</li>
+<li>if unix is text-based, how do desktop environments like GNOME fit in?</li>
+<li>how does the &ldquo;man&rdquo; system work.</li>
+<li>kpatch, kgraph, kexec</li>
+<li>more about the stack. Are C vars really stack slots? How tf do setjmp
+and longjmp work?</li>
+<li>package management</li>
+<li>mounts and vfs</li>
+</ul>
+
+<p>this is great for so many reasons!</p>
+
+<ol>
+<li>I need to draw 11 more drawings about Linux this month and these are
+such great ideas</li>
+<li>there are many things I don&rsquo;t know on this list and it&rsquo;s a cool
+reminder of how much interesting stuff there still is to learn! A few
+of these I barely even know what they are (dbus, SELinux) or only have a
+pretty sketchy notion (seccomp, how X11 works, many more)</li>
+<li>it&rsquo;s also a cool reminder of how far I&rsquo;ve come &ndash; I at least know
+where to <em>start</em> with most of the things on this list, even if I
+definitely could not explain a lot of them in detail without looking
+some stuff up.</li>
+</ol>
+
+<p>Also I sometimes want to remind people that you too could write
+interesting
+blog posts / drawings on the internet &ndash; for instance &ldquo;what is dmesg even doing&rdquo; is
+an interesting topic, and totally possible to learn about! (I just
+read <a href="https://en.wikipedia.org/wiki/Dmesg">dmesg</a> on Wikipedia and now I
+know more!)</p>
+
+</div>
+<footer>
+<div class="sharing">
+<a href="http://twitter.com/share" class="twitter-share-button" data-url="https://jvns.ca/blog/2016/11/21/things-to-learn-about-linux/" data-via="b0rk" data-counturl="https://jvns.ca/blog/2016/11/21/things-to-learn-about-linux/">Tweet</a>
+</div>
+<p class="meta">
+   
+    <a class="basic-alignment left" href="https://jvns.ca/blog/2016/11/27/more-linux-drawings/" title="Previous Post: More drawings about computers">More drawings about computers</a>
+  
+   
+    <a class="basic-alignment right" href="https://jvns.ca/blog/2016/11/19/a-critique-of-the-cap-theorem/" title="Previous Post: &#34;A Critique of the CAP Theorem&#34;">&#34;A Critique of the CAP Theorem&#34;</a>
+  
+</p>
+</footer>
+</article>
+</div>
+
+</div>
+</div>
+<nav role="navigation" class="footer-nav"> <a href="/">Archives</a>
+</nav>
+<footer role="contentinfo"><span class="credit">&copy; 2016 Polina Soshnin.
+</footer>
+</div>
+</body>
+</html>
+

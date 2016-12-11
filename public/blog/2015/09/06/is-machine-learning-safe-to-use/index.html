@@ -1,0 +1,115 @@
+
+<!DOCTYPE html>
+
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8">
+<title>Is machine learning safe to use? - Polina Soshnin</title>
+<meta name="author" content="Julia Evans">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="description" content="Is machine learning safe to use?">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="https://jvns.ca/blog/2015/09/06/is-machine-learning-safe-to-use/">
+<link href="/favicon.ico" rel="icon">
+<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+<link href="/atom.xml" rel="alternate" title="Julia Evans" type="application/atom+xml">
+ 
+<link href="https://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='https://fonts.googleapis.com/css?family=Montserrat:700,400' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Alegreya:400,900,700' rel='stylesheet' type='text/css'>
+</head>
+<body>
+<div id="wrap">
+<header role="banner">
+<hgroup>
+<h1><a href="/">Polina Soshnin</a></h1>
+</hgroup>
+<ul class="header-links">
+<span><li><a href="/about">About</a></li>
+<li><a href="/projects">Projects</a></li></span>
+    <li><a href="https://github.com/polinadotio">Github</a></li></span>
+    <li><a href="https://www.linkedin.com/in/polinasoshnin">LinkedIn</a></li></span>
+</ul>
+</header>
+<nav role="navigation" class="header-nav"><ul class="main-navigation">
+<li><a href="/categories/favorite/">Favorites</a></li>
+<li><a href="/zines">Zines</a></li>
+</ul>
+</nav>
+<div id="main">
+<div id="content">
+
+<div>
+<article class="hentry" role="article">
+<header>
+<h1 class="entry-title">Is machine learning safe to use?</h1>
+
+<div class="post-tags">
+  
+  •
+  
+    <a class="post-tag" href="/categories/machinelearning">machinelearning</a> 	•
+  
+  
+</div>
+<p class="meta">
+<time datetime="2015-09-06T10:39:40" pubdate data-updated="true"></time>
+</p>
+</header>
+<div class="entry-content">
+     <p>I&rsquo;ve been thinking about this a lot because I do ML at work. here are a few of my
+current thoughts. I&rsquo;d like to hear what you think
+<a href="https://twitter.com/b0rk/status/640536115091521536">on twitter</a> &ndash; I think  being responsible for the accuracy of a system that you don&rsquo;t fully understand is scary/ very interesting.</p>
+
+<p><img src="/images/ml_safe.jpg"></p>
+
+<p>transcript:</p>
+
+<p><strong>FIRST</strong>: Can you understand your model? A regression with 10 variables is easy; a big random forest isn&rsquo;t.</p>
+
+<p>A model you don&rsquo;t understand is</p>
+
+<ul>
+<li><strong>awesome</strong>. It can perform really well, and you can save time at first by ignoring the details.</li>
+<li><strong>scary</strong>. It will make unpredictable and sometimes embarrassing mistakes. You&rsquo;re responsible for them.</li>
+<li><strong>only as good as your data</strong>. Often when I train a new model I think at some point &ldquo;NO PLZ DON&rsquo;T USE THAT DATA TO MAKE DECISION OH NOOOOO&rdquo;</li>
+</ul>
+
+<p>Some way to make it less scary:</p>
+
+<ul>
+<li>have a human <strong>double check</strong> the scariest choices</li>
+<li>use complicated models when it&rsquo;s okay to make unpredictable mistakes, simple models when it&rsquo;s less okay</li>
+<li>use ML for research, learn why it&rsquo;s doing better, incorporate your findings into a less complex system</li>
+</ul>
+
+</div>
+<footer>
+<div class="sharing">
+<a href="http://twitter.com/share" class="twitter-share-button" data-url="https://jvns.ca/blog/2015/09/06/is-machine-learning-safe-to-use/" data-via="b0rk" data-counturl="https://jvns.ca/blog/2015/09/06/is-machine-learning-safe-to-use/">Tweet</a>
+</div>
+<p class="meta">
+   
+    <a class="basic-alignment left" href="https://jvns.ca/blog/2015/09/10/a-millisecond-isnt-fast-and-how-we-fixed-it/" title="Previous Post: A millisecond isn&#39;t fast (and how we made it 100x faster)">A millisecond isn&#39;t fast (and how we made it 100x faster)</a>
+  
+   
+    <a class="basic-alignment right" href="https://jvns.ca/blog/2015/07/25/an-argument-for-hiring-junior-developers/" title="Previous Post: An argument for hiring junior developers">An argument for hiring junior developers</a>
+  
+</p>
+</footer>
+</article>
+</div>
+
+</div>
+</div>
+<nav role="navigation" class="footer-nav"> <a href="/">Archives</a>
+</nav>
+<footer role="contentinfo"><span class="credit">&copy; 2016 Polina Soshnin.
+</footer>
+</div>
+</body>
+</html>
+

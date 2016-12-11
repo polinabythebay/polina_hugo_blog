@@ -1,0 +1,128 @@
+
+<!DOCTYPE html>
+
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8">
+<title>Day 3: What does the Linux kernel even do? - Polina Soshnin</title>
+<meta name="author" content="Julia Evans">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="description" content="Day 3: What does the Linux kernel even do?">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="https://jvns.ca/blog/2013/10/02/day-3-what-does-the-linux-kernel-even-do/">
+<link href="/favicon.ico" rel="icon">
+<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+<link href="/atom.xml" rel="alternate" title="Julia Evans" type="application/atom+xml">
+ 
+<link href="https://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='https://fonts.googleapis.com/css?family=Montserrat:700,400' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Alegreya:400,900,700' rel='stylesheet' type='text/css'>
+</head>
+<body>
+<div id="wrap">
+<header role="banner">
+<hgroup>
+<h1><a href="/">Polina Soshnin</a></h1>
+</hgroup>
+<ul class="header-links">
+<span><li><a href="/about">About</a></li>
+<li><a href="/projects">Projects</a></li></span>
+    <li><a href="https://github.com/polinadotio">Github</a></li></span>
+    <li><a href="https://www.linkedin.com/in/polinasoshnin">LinkedIn</a></li></span>
+</ul>
+</header>
+<nav role="navigation" class="header-nav"><ul class="main-navigation">
+<li><a href="/categories/favorite/">Favorites</a></li>
+<li><a href="/zines">Zines</a></li>
+</ul>
+</nav>
+<div id="main">
+<div id="content">
+
+<div>
+<article class="hentry" role="article">
+<header>
+<h1 class="entry-title">Day 3: What does the Linux kernel even do?</h1>
+
+<div class="post-tags">
+  
+  •
+  
+    <a class="post-tag" href="/categories/hackerschool">hackerschool</a> 	•
+  
+    <a class="post-tag" href="/categories/kernel">kernel</a> 	•
+  
+  
+</div>
+<p class="meta">
+<time datetime="2013-10-02T00:00:00" pubdate data-updated="true"></time>
+</p>
+</header>
+<div class="entry-content">
+     <p>We had a really fun session this morning where we got together and made
+a list of the different functions that Linux kernel takes care of.
+Tomorrow we&rsquo;re going to go into more details on some specific parts of
+the kernel. So exciting.</p>
+
+<p>(there are comments now! If some of these things are wrong, comment?)</p>
+
+<p>Here are the systems we came up with, in no particular order:</p>
+
+<ul>
+<li>memory management (RAM)</li>
+<li>device drivers (keyboard, network, graphics card, mouse, monitors,
+wireless cards, etc.)</li>
+<li>starting processes</li>
+<li>thread scheduling
+</li>
+<li>filesystems (ext3, ext4, reiserfs, fat32, etc.)</li>
+<li>VFS: interface that lets you get files no matter what filesystem
+you&rsquo;re using</li>
+<li>UNIX APIs (system calls: here&rsquo;s <a href="http://asm.sourceforge.net/syscall.html">a list</a>)</li>
+<li>POSIX security model (permissions)</li>
+<li>virtual machines, containers (like LXC)</li>
+<li>networking (bridging, firewalls, protocol implementations like TCP/IP,
+UDP, ethernet, ICMP, RPC, wireless).</li>
+<li>IPC (interprocess communication)</li>
+<li>signals (SIGINT, SIGKILL)</li>
+<li>interrupt handlers &ndash; handles events from the hardware (packet
+received, keypress, timers, graphics card ready, data ready, hard
+drive finished reading). Hardware is sometimes handled in other ways
+like DMA.</li>
+<li>Timers (when I call <code>sleep()</code>)</li>
+<li>Timekeeping (when I ask for the time)</li>
+<li>architecture-specific stuff (amd64, powerpc, x86, MIPS, ARM)</li>
+<li>power management</li>
+<li>loading kernel modules</li>
+<li>kernel debugging tools</li>
+</ul>
+</div>
+<footer>
+<div class="sharing">
+<a href="http://twitter.com/share" class="twitter-share-button" data-url="https://jvns.ca/blog/2013/10/02/day-3-what-does-the-linux-kernel-even-do/" data-via="b0rk" data-counturl="https://jvns.ca/blog/2013/10/02/day-3-what-does-the-linux-kernel-even-do/">Tweet</a>
+</div>
+<p class="meta">
+   
+    <a class="basic-alignment left" href="https://jvns.ca/blog/2013/10/04/day-4-processes-vs-threads/" title="Previous Post: Day 4: Processes vs threads, and kernel modules!">Day 4: Processes vs threads, and kernel modules!</a>
+  
+   
+    <a class="basic-alignment right" href="https://jvns.ca/blog/2013/10/01/day-2-netcat-fun/" title="Previous Post: Day 2: netcat fun!">Day 2: netcat fun!</a>
+  
+</p>
+</footer>
+</article>
+</div>
+
+</div>
+</div>
+<nav role="navigation" class="footer-nav"> <a href="/">Archives</a>
+</nav>
+<footer role="contentinfo"><span class="credit">&copy; 2016 Polina Soshnin.
+</footer>
+</div>
+</body>
+</html>
+

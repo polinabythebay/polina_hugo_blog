@@ -1,0 +1,111 @@
+
+<!DOCTYPE html>
+
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8">
+<title>Day 41: Linkers are upsetting - Polina Soshnin</title>
+<meta name="author" content="Julia Evans">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="description" content="Day 41: Linkers are upsetting">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="https://jvns.ca/blog/2013/12/12/day-41-linkers-are-still-upsetting/">
+<link href="/favicon.ico" rel="icon">
+<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+<link href="/atom.xml" rel="alternate" title="Julia Evans" type="application/atom+xml">
+ 
+<link href="https://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='https://fonts.googleapis.com/css?family=Montserrat:700,400' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Alegreya:400,900,700' rel='stylesheet' type='text/css'>
+</head>
+<body>
+<div id="wrap">
+<header role="banner">
+<hgroup>
+<h1><a href="/">Polina Soshnin</a></h1>
+</hgroup>
+<ul class="header-links">
+<span><li><a href="/about">About</a></li>
+<li><a href="/projects">Projects</a></li></span>
+    <li><a href="https://github.com/polinadotio">Github</a></li></span>
+    <li><a href="https://www.linkedin.com/in/polinasoshnin">LinkedIn</a></li></span>
+</ul>
+</header>
+<nav role="navigation" class="header-nav"><ul class="main-navigation">
+<li><a href="/categories/favorite/">Favorites</a></li>
+<li><a href="/zines">Zines</a></li>
+</ul>
+</nav>
+<div id="main">
+<div id="content">
+
+<div>
+<article class="hentry" role="article">
+<header>
+<h1 class="entry-title">Day 41: Linkers are upsetting</h1>
+
+<div class="post-tags">
+  
+  •
+  
+    <a class="post-tag" href="/categories/hackerschool">hackerschool</a> 	•
+  
+    <a class="post-tag" href="/categories/linkers">linkers</a> 	•
+  
+  
+</div>
+<p class="meta">
+<time datetime="2013-12-12T00:00:00" pubdate data-updated="true"></time>
+</p>
+</header>
+<div class="entry-content">
+     <p>Today I spent pretty much the whole day trying to figure out what&rsquo;s
+going on with a
+<a href="http://jvns.ca/blog/2013/12/06/day-38-after-7-days/">linker problem I&rsquo;m having</a>.
+I&rsquo;ve fixed it, but I don&rsquo;t understand <em>why</em> it&rsquo;s fixed, and I am
+having no luck.</p>
+
+<p><a href="http://akaptur.github.io/">Allison</a> and I paired on it for a bit, and
+we discovered that if we order the sections <code>.text .rodata .data
+.bss</code>, then the ELF file works correctly, but if they&rsquo;re in any other
+order it doesn&rsquo;t work.
+<a href="https://gist.github.com/jvns/ec07560a4484edd30d70">There&rsquo;s a gist</a>
+with the offending linker scripts.</p>
+
+<p>I also created
+<a href="http://stackoverflow.com/questions/20526765/linker-scripts-strategies-for-debugging">a StackOverflow question</a>
+but it is not getting any love.</p>
+
+<p>To compensate, I wrote a
+<a href="http://gist.io/7923908">tiny start of a tutorial about binary formats</a>.</p>
+
+</div>
+<footer>
+<div class="sharing">
+<a href="http://twitter.com/share" class="twitter-share-button" data-url="https://jvns.ca/blog/2013/12/12/day-41-linkers-are-still-upsetting/" data-via="b0rk" data-counturl="https://jvns.ca/blog/2013/12/12/day-41-linkers-are-still-upsetting/">Tweet</a>
+</div>
+<p class="meta">
+   
+    <a class="basic-alignment left" href="https://jvns.ca/blog/2013/12/13/day-42-how-to-run-an-elf-executable-i-dont-know/" title="Previous Post: Day 42: How to run a simple ELF executable, from scratch (I don&#39;t know)">Day 42: How to run a simple ELF executable, from scratch (I don&#39;t know)</a>
+  
+   
+    <a class="basic-alignment right" href="https://jvns.ca/blog/2013/12/10/day-39-i-wrote-a-malloc/" title="Previous Post: Day 39: Writing malloc wrong, for fun">Day 39: Writing malloc wrong, for fun</a>
+  
+</p>
+</footer>
+</article>
+</div>
+
+</div>
+</div>
+<nav role="navigation" class="footer-nav"> <a href="/">Archives</a>
+</nav>
+<footer role="contentinfo"><span class="credit">&copy; 2016 Polina Soshnin.
+</footer>
+</div>
+</body>
+</html>
+

@@ -1,0 +1,156 @@
+
+<!DOCTYPE html>
+
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8">
+<title>A/A testing - Polina Soshnin</title>
+<meta name="author" content="Julia Evans">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="description" content="A/A testing">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="https://jvns.ca/blog/2015/02/06/a-a-testing/">
+<link href="/favicon.ico" rel="icon">
+<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+<link href="/atom.xml" rel="alternate" title="Julia Evans" type="application/atom+xml">
+ 
+<link href="https://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='https://fonts.googleapis.com/css?family=Montserrat:700,400' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Alegreya:400,900,700' rel='stylesheet' type='text/css'>
+</head>
+<body>
+<div id="wrap">
+<header role="banner">
+<hgroup>
+<h1><a href="/">Polina Soshnin</a></h1>
+</hgroup>
+<ul class="header-links">
+<span><li><a href="/about">About</a></li>
+<li><a href="/projects">Projects</a></li></span>
+    <li><a href="https://github.com/polinadotio">Github</a></li></span>
+    <li><a href="https://www.linkedin.com/in/polinasoshnin">LinkedIn</a></li></span>
+</ul>
+</header>
+<nav role="navigation" class="header-nav"><ul class="main-navigation">
+<li><a href="/categories/favorite/">Favorites</a></li>
+<li><a href="/zines">Zines</a></li>
+</ul>
+</nav>
+<div id="main">
+<div id="content">
+
+<div>
+<article class="hentry" role="article">
+<header>
+<h1 class="entry-title">A/A testing</h1>
+
+<div class="post-tags">
+  
+  •
+  
+    <a class="post-tag" href="/categories/machinelearning">machinelearning</a> 	•
+  
+  
+</div>
+<p class="meta">
+<time datetime="2015-02-06T16:39:24" pubdate data-updated="true"></time>
+</p>
+</header>
+<div class="entry-content">
+     <p>Thursday evening I organized a meetup called Data Science: Inconvenient
+Truths where the amazing <a href="https://twitter.com/dydt">Diyang Tang</a>,
+<a href="https://twitter.com/clarecorthell">Clare Corthell</a>, and
+<a href="https://twitter.com/elenatej">Elena Grewal</a> told great stories about
+things that have gone wrong when doing machine learning or data
+analysis.</p>
+
+<p>Elena gave a talk (<a href="https://www.youtube.com/watch?v=THBtcS7Wwss">video of a previous version</a>)
+about common mistakes you can make when running experiments. I was super
+excited to hear her talk because I&rsquo;m working on an experiment right now
+at work and trying to interpret the results. The whole talk is great &ndash;
+it has really good examples of experiments Airbnb has worked on &ndash; and
+you should watch it, but I want to talk about the very small part where
+she mentions A/A
+testing.</p>
+
+<p>I&rsquo;ve heard of <a href="https://en.wikipedia.org/wiki/A/B_testing">A/B testing</a>!
+But I&rsquo;d never heard of A/A testing before, didn&rsquo;t really understand
+what she meant at the time, and didn&rsquo;t manage to ask. (pro tip: ask
+questions when you have them :)). I slept on it, and I now think a) that
+I get it and b) it&rsquo;s really simple and c) that it&rsquo;s SUPER COOL AND MAYBE
+USEFUL TO ME.</p>
+
+<p>Let&rsquo;s pretend I have a widget store, and that I&rsquo;m running an experiment
+where I have a Great Idea that I think will sell WAY MORE WIDGETS. I&rsquo;ve
+rolled out my Great Idea to 33% of users, and I have a gorgeous
+dashboard that says that my Great Idea group has 2% higher sales than my
+other group, like this:</p>
+
+<p><img src="/images/a-a-testing-good.png"></p>
+
+<p>A 2% increase in sales is a pretty big deal! But how do I know that
+these results are actually significant? One great way is to do
+statistics &ndash; Dan McKinley built this calculator which you can see
+<a href="http://www.experimentcalculator.com/">here</a> that makes some assumptions
+and tells you how long you&rsquo;ll need to run your experiment for to see
+statistical significance.</p>
+
+<p>But let&rsquo;s say you want to get a rough sense for whether or not your
+results might be significant without doing statistics.</p>
+
+<p>This is where A/A testing comes in! The idea here is to compare two
+sets of users in the same experimental group and see how high the
+variation is. So instead of having a Great Idea group and a Control
+Group, we&rsquo;ll use <strong>two</strong> control groups. And then we might see something
+like this:</p>
+
+<p><img src="/images/a-a-testing-bad.png"></p>
+
+<p>Suddenly, the group we&rsquo;re experimenting on doesn&rsquo;t look so good anymore.
+It looks like any difference is likely to be just because of random
+noise. If we&rsquo;d instead seen something like this, we&rsquo;d be much more
+likely to believe that the Great Idea is actually doing well:</p>
+
+<p><img src="/images/a-a-testing-looks-better.png"></p>
+
+<p>I like this because it seems like it can give you a rough sense for how
+significant your results are without having to decide on a statistical
+model. And it&rsquo;s super intuitive! A question like &ldquo;if we compare two
+groups of this size with the same characteristics, do we naturally see a
+lot of variation?&rdquo; is a great smoke test.</p>
+
+<p>Once I got off a plane and looked up what A/A testing actually is, I
+found out the graph above has a name! It&rsquo;s called A/A/B testing, and A/A
+testing is when you literally just run an experiment where both groups
+are the same :)</p>
+
+</div>
+<footer>
+<div class="sharing">
+<a href="http://twitter.com/share" class="twitter-share-button" data-url="https://jvns.ca/blog/2015/02/06/a-a-testing/" data-via="b0rk" data-counturl="https://jvns.ca/blog/2015/02/06/a-a-testing/">Tweet</a>
+</div>
+<p class="meta">
+   
+    <a class="basic-alignment left" href="https://jvns.ca/blog/2015/02/17/how-i-learned-to-program-in-10-years/" title="Previous Post: How I learned to program in 10 years">How I learned to program in 10 years</a>
+  
+   
+    <a class="basic-alignment right" href="https://jvns.ca/blog/2015/01/24/why-a-c-plus-plus-programmer-might-say-i-could-never-write-python/" title="Previous Post: Why a C&#43;&#43; programmer might say &#34;I could never write Python&#34;">Why a C&#43;&#43; programmer might say &#34;I could never write Python&#34;</a>
+  
+</p>
+</footer>
+</article>
+</div>
+
+</div>
+</div>
+<nav role="navigation" class="footer-nav"> <a href="/">Archives</a>
+</nav>
+<footer role="contentinfo"><span class="credit">&copy; 2016 Polina Soshnin.
+</footer>
+</div>
+</body>
+</html>
+

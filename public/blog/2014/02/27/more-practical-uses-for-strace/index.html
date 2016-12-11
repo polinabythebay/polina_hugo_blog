@@ -1,0 +1,164 @@
+
+<!DOCTYPE html>
+
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8">
+<title>More practical uses for strace! - Polina Soshnin</title>
+<meta name="author" content="Julia Evans">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="description" content="More practical uses for strace!">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="https://jvns.ca/blog/2014/02/27/more-practical-uses-for-strace/">
+<link href="/favicon.ico" rel="icon">
+<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+<link href="/atom.xml" rel="alternate" title="Julia Evans" type="application/atom+xml">
+ 
+<link href="https://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='https://fonts.googleapis.com/css?family=Montserrat:700,400' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Alegreya:400,900,700' rel='stylesheet' type='text/css'>
+</head>
+<body>
+<div id="wrap">
+<header role="banner">
+<hgroup>
+<h1><a href="/">Polina Soshnin</a></h1>
+</hgroup>
+<ul class="header-links">
+<span><li><a href="/about">About</a></li>
+<li><a href="/projects">Projects</a></li></span>
+    <li><a href="https://github.com/polinadotio">Github</a></li></span>
+    <li><a href="https://www.linkedin.com/in/polinasoshnin">LinkedIn</a></li></span>
+</ul>
+</header>
+<nav role="navigation" class="header-nav"><ul class="main-navigation">
+<li><a href="/categories/favorite/">Favorites</a></li>
+<li><a href="/zines">Zines</a></li>
+</ul>
+</nav>
+<div id="main">
+<div id="content">
+
+<div>
+<article class="hentry" role="article">
+<header>
+<h1 class="entry-title">More practical uses for strace!</h1>
+
+<div class="post-tags">
+  
+  •
+  
+    <a class="post-tag" href="/categories/kernel">kernel</a> 	•
+  
+    <a class="post-tag" href="/categories/strace">strace</a> 	•
+  
+  
+</div>
+<p class="meta">
+<time datetime="2014-02-27T07:25:36" pubdate data-updated="true"></time>
+</p>
+</header>
+<div class="entry-content">
+     <p>In yesterday&rsquo;s blog post on
+<a href="http://jvns.ca/blog/2014/02/26/using-strace-to-avoid-reading-ruby-code/">using strace to avoid reading Ruby code</a>
+I asked the Internet for some more suggestions of practical uses for
+strace.</p>
+
+<p>There were so many excellent suggestions that I couldn&rsquo;t not share!</p>
+
+<p><a href="http://twitter.com/gazoombo">Mike English</a> pointed me to this
+<em>wonderful</em>
+blog post<br />
+<a href="http://spin.atomicobject.com/2013/08/19/debug-ruby-processes/">Tools for Debugging Running Ruby Processes</a>
+he wrote about using strace, lsof, and gdb to debug a running Ruby
+processes. He remarks that some of the things are like open-heart
+surgery &ndash; you can go into a running Ruby process and execute code
+using gdb, but you might kill the process. Super cool and definitely
+worth a read.</p>
+
+<p>Some more great suggestions of what to do with strace:</p>
+
+<p></p>
+
+<p>Look for the &lsquo;open&rsquo; system call!</p>
+
+<blockquote class="twitter-tweet" lang="en"><p><a
+href="https://twitter.com/mjdominus">@mjdominus</a> <a
+href="https://twitter.com/b0rk">@b0rk</a> Also invaluable when
+sandboxing programs and trying to figure out where they are loading
+shared libraries from.</p>&mdash; Eiríkr Åsheim (@d6) <a
+href="https://twitter.com/d6/statuses/438904114597347329">February 27,
+2014</a></blockquote>
+
+<blockquote class="twitter-tweet" data-conversation="none"
+lang="en"><p><a href="https://twitter.com/b0rk">@b0rk</a> While
+looking at git performance, I&#39;ve used strace -c as well as <a
+href="https://twitter.com/pgbovine">@pgbovine</a>&#39;s
+strace-plus.</p>&mdash; David Turner (@NovalisDMT) <a
+href="https://twitter.com/NovalisDMT/statuses/438901005108133888">February
+27, 2014</a></blockquote>
+
+<p>A suggestion to also use ltrace:</p>
+
+<blockquote class="twitter-tweet" data-conversation="none"
+lang="en"><p><a href="https://twitter.com/b0rk">@b0rk</a> all I know
+is that I usually start with strace, get annoyed with it, then
+remember to use ltrace instead. :-)</p>&mdash; Brian Mastenbrook
+(@bmastenbrook) <a
+href="https://twitter.com/bmastenbrook/statuses/438878838257250305">February
+27, 2014</a></blockquote>
+
+<p><blockquote class="twitter-tweet" data-conversation="none"
+lang="en"><p><a href="https://twitter.com/b0rk">@b0rk</a> check out
+syscall tracing on Linux, it&#39;s like strace for the whole system,
+handy if you want to know which process is doing something.</p>&mdash;
+Michael Ellerman (@michaelellerman) <a
+href="https://twitter.com/michaelellerman/statuses/438994429219586051">February
+27, 2014</a></blockquote> <script async
+src="//platform.twitter.com/widgets.js" charset="utf-8"></script> I
+didn&rsquo;t know syscall tracing was a thing! This seems very worthy of
+investigation.</p>
+
+<script async src="//platform.twitter.com/widgets.js"
+charset="utf-8"></script>
+
+<p>Here are some
+<a href="http://price.mit.edu/tracing-w2014/#12">slides by Greg Price</a> with a
+bunch of great suggestions for fixing various problems, as well as his
+blog post
+<a href="https://blogs.oracle.com/ksplice/entry/strace_the_sysadmin_s_microscope">Strace - The Sysadmin&rsquo;s Microscope</a>
+from the wonderful ksplice blog.</p>
+
+<p>Alex Clemmer wrote a super cool post on using dtruss (strace, but for
+OS X/BSD) to try to better understand concurrency primitives:
+<a href="http://blog.nullspace.io/day-266.html">The unfamiliar world of OS X syscalls</a>.</p>
+</div>
+<footer>
+<div class="sharing">
+<a href="http://twitter.com/share" class="twitter-share-button" data-url="https://jvns.ca/blog/2014/02/27/more-practical-uses-for-strace/" data-via="b0rk" data-counturl="https://jvns.ca/blog/2014/02/27/more-practical-uses-for-strace/">Tweet</a>
+</div>
+<p class="meta">
+   
+    <a class="basic-alignment left" href="https://jvns.ca/blog/2014/03/01/pair-programming/" title="Previous Post: Pair programming">Pair programming</a>
+  
+   
+    <a class="basic-alignment right" href="https://jvns.ca/blog/2014/02/26/using-strace-to-avoid-reading-ruby-code/" title="Previous Post: Using strace to avoid reading Ruby code">Using strace to avoid reading Ruby code</a>
+  
+</p>
+</footer>
+</article>
+</div>
+
+</div>
+</div>
+<nav role="navigation" class="footer-nav"> <a href="/">Archives</a>
+</nav>
+<footer role="contentinfo"><span class="credit">&copy; 2016 Polina Soshnin.
+</footer>
+</div>
+</body>
+</html>
+

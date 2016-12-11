@@ -1,0 +1,119 @@
+
+<!DOCTYPE html>
+
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8">
+<title>Day 7: An echo server in Clojure - Polina Soshnin</title>
+<meta name="author" content="Julia Evans">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="description" content="Day 7: An echo server in Clojure">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="https://jvns.ca/blog/2013/10/09/day-7-an-echo-server-in-clojure/">
+<link href="/favicon.ico" rel="icon">
+<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+<link href="/atom.xml" rel="alternate" title="Julia Evans" type="application/atom+xml">
+ 
+<link href="https://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='https://fonts.googleapis.com/css?family=Montserrat:700,400' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Alegreya:400,900,700' rel='stylesheet' type='text/css'>
+</head>
+<body>
+<div id="wrap">
+<header role="banner">
+<hgroup>
+<h1><a href="/">Polina Soshnin</a></h1>
+</hgroup>
+<ul class="header-links">
+<span><li><a href="/about">About</a></li>
+<li><a href="/projects">Projects</a></li></span>
+    <li><a href="https://github.com/polinadotio">Github</a></li></span>
+    <li><a href="https://www.linkedin.com/in/polinasoshnin">LinkedIn</a></li></span>
+</ul>
+</header>
+<nav role="navigation" class="header-nav"><ul class="main-navigation">
+<li><a href="/categories/favorite/">Favorites</a></li>
+<li><a href="/zines">Zines</a></li>
+</ul>
+</nav>
+<div id="main">
+<div id="content">
+
+<div>
+<article class="hentry" role="article">
+<header>
+<h1 class="entry-title">Day 7: An echo server in Clojure</h1>
+
+<div class="post-tags">
+  
+  •
+  
+    <a class="post-tag" href="/categories/hackerschool">hackerschool</a> 	•
+  
+    <a class="post-tag" href="/categories/clojure">clojure</a> 	•
+  
+  
+</div>
+<p class="meta">
+<time datetime="2013-10-09T00:00:00" pubdate data-updated="true"></time>
+</p>
+</header>
+<div class="entry-content">
+     <p>Today I spent some time on a fun kernel module, but it is not working
+yet!  So here is what I also did.</p>
+
+<p>It did not take very long and I didn&rsquo;t really learn too much Clojure
+doing this &ndash; this is really just procedural code written in Clojure. I
+can&rsquo;t tell yet if this is an appropriate way to write a small Clojure
+program. Need to get some code review on this.</p>
+
+<p>But it works! You can see the code here: <a href="https://gist.github.com/jvns/6910896">https://gist.github.com/jvns/6910896</a>
+</p>
+
+<p>You can interact with the server using <code>netcat</code>
+(see also: <a href="http://jvns.ca/blog/2013/10/01/day-2-netcat-fun/">Day 2: netcat fun!</a>).
+The <code>-u</code> option here tells netcat to use UDP instead of TCP.</p>
+
+<pre><code>bork@kiwi ~/w/h/clorrent&gt; nc -u localhost 12345
+Hi, Clojure!
+Hi, Clojure!
+</code></pre>
+
+<p>If you don&rsquo;t want to set up a whole
+<a href="https://github.com/technomancy/leiningen">Leinengen</a> project to run
+this, you can use
+<a href="https://github.com/kumarshantanu/lein-exec">lein-exec</a>.</p>
+
+<p>This is the first step towards maybe writing a BitTorrent client in
+Clojure &ndash; many other people are writing BitTorrent client and really
+enjoying it, and I&rsquo;m jealous. We&rsquo;ll see if it happens!</p>
+</div>
+<footer>
+<div class="sharing">
+<a href="http://twitter.com/share" class="twitter-share-button" data-url="https://jvns.ca/blog/2013/10/09/day-7-an-echo-server-in-clojure/" data-via="b0rk" data-counturl="https://jvns.ca/blog/2013/10/09/day-7-an-echo-server-in-clojure/">Tweet</a>
+</div>
+<p class="meta">
+   
+    <a class="basic-alignment left" href="https://jvns.ca/blog/2013/10/12/day-8-julia-writes-julia-and-open-source/" title="Previous Post: Day 8: Julia writes Julia! And remembers that open source is hard.">Day 8: Julia writes Julia! And remembers that open source is hard.</a>
+  
+   
+    <a class="basic-alignment right" href="https://jvns.ca/blog/2013/10/08/day-6-i-wrote-a-rootkit/" title="Previous Post: Day 6: I wrote a rootkit!">Day 6: I wrote a rootkit!</a>
+  
+</p>
+</footer>
+</article>
+</div>
+
+</div>
+</div>
+<nav role="navigation" class="footer-nav"> <a href="/">Archives</a>
+</nav>
+<footer role="contentinfo"><span class="credit">&copy; 2016 Polina Soshnin.
+</footer>
+</div>
+</body>
+</html>
+

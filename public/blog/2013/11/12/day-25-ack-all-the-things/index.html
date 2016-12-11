@@ -1,0 +1,141 @@
+
+<!DOCTYPE html>
+
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8">
+<title>Day 25: ACK all the things - Polina Soshnin</title>
+<meta name="author" content="Julia Evans">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="description" content="Day 25: ACK all the things">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="https://jvns.ca/blog/2013/11/12/day-25-ack-all-the-things/">
+<link href="/favicon.ico" rel="icon">
+<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+<link href="/atom.xml" rel="alternate" title="Julia Evans" type="application/atom+xml">
+ 
+<link href="https://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='https://fonts.googleapis.com/css?family=Montserrat:700,400' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Alegreya:400,900,700' rel='stylesheet' type='text/css'>
+</head>
+<body>
+<div id="wrap">
+<header role="banner">
+<hgroup>
+<h1><a href="/">Polina Soshnin</a></h1>
+</hgroup>
+<ul class="header-links">
+<span><li><a href="/about">About</a></li>
+<li><a href="/projects">Projects</a></li></span>
+    <li><a href="https://github.com/polinadotio">Github</a></li></span>
+    <li><a href="https://www.linkedin.com/in/polinasoshnin">LinkedIn</a></li></span>
+</ul>
+</header>
+<nav role="navigation" class="header-nav"><ul class="main-navigation">
+<li><a href="/categories/favorite/">Favorites</a></li>
+<li><a href="/zines">Zines</a></li>
+</ul>
+</nav>
+<div id="main">
+<div id="content">
+
+<div>
+<article class="hentry" role="article">
+<header>
+<h1 class="entry-title">Day 25: ACK all the things</h1>
+
+<div class="post-tags">
+  
+  •
+  
+    <a class="post-tag" href="/categories/hackerschool">hackerschool</a> 	•
+  
+  
+</div>
+<p class="meta">
+<time datetime="2013-11-12T00:00:00" pubdate data-updated="true"></time>
+</p>
+</header>
+<div class="entry-content">
+     <p>Today I worked some more on my TCP stack! I read a bit of Stevens&rsquo;
+<a href="http://www.amazon.com/TCP-Illustrated-Vol-Addison-Wesley-Professional/dp/0201633469">TCP/IP Illustrated</a>,
+where I obtained exactly one insight: every TCP packet I send (except
+for the initial SYN) can have the ACK flag set.</p>
+
+<p>This simplified my packet-sending code a lot &ndash; I realized I can construct
+basically every packet the same way, except for the flags and the payload. Now
+I can write</p>
+
+<pre><code>def _send_syn(self):
+    self._send(flags=&quot;S&quot;)
+    self.state = &quot;SYN-SENT&quot;
+</code></pre>
+
+<p>instead of</p>
+
+<pre><code>def send_syn(self):
+    syn_pkt = self.ip_header / TCP(dport=self.dest_port, sport=self.src_port, flags=&quot;S&quot;, seq=self.seq)
+    self.listener.send(syn_pkt)
+    self.state = &quot;SYN-SENT&quot;
+</code></pre>
+
+<p>Right now the way I&rsquo;m handling ACKs is basically to send an ACK for every
+packet I receive. This isn&rsquo;t really efficient (because if I&rsquo;m receiving tons of
+packets really fast it would make sense to acknowledge less often). But it is
+not incorrect, which is all that I&rsquo;m going for.</p>
+
+<p>I also decided that I want to be able to be a TCP server as well as a TCP
+client. So I started writing <code>bind()</code>. Here it is so far:</p>
+
+<pre><code>def bind(self):
+    pass
+</code></pre>
+
+<p>Seriously I did not ever think about how <code>bind()</code> works before. It has to
+manage multiple connections! And keep a queue! What am I supposed to do when
+people send me packets all at once? Just ignore them until I have time? I don&rsquo;t
+get it.</p>
+
+<p>Testing is fantastic. I love testing. I refactored pretty much all the code today in
+<a href="https://github.com/jvns/teeceepee/commit/aa8ff0a027e8e23388ab922951a7524467b429e7">this commit</a>.
+The code still works, because tests. =D</p>
+
+<p>However writing tests kind of sucks because it takes forever. Next up: writing
+tests for</p>
+
+<ul>
+<li>receiving packets out of order</li>
+<li>receiving duplicate packets</li>
+<li>being on the server side of the TCP handshake</li>
+</ul>
+
+</div>
+<footer>
+<div class="sharing">
+<a href="http://twitter.com/share" class="twitter-share-button" data-url="https://jvns.ca/blog/2013/11/12/day-25-ack-all-the-things/" data-via="b0rk" data-counturl="https://jvns.ca/blog/2013/11/12/day-25-ack-all-the-things/">Tweet</a>
+</div>
+<p class="meta">
+   
+    <a class="basic-alignment left" href="https://jvns.ca/blog/2013/11/13/day-27-magic-testing-functions/" title="Previous Post: Day 27: Automatically testing changes in state! Visualizing my Git workflow! Floats!">Day 27: Automatically testing changes in state! Visualizing my Git workflow! Floats!</a>
+  
+   
+    <a class="basic-alignment right" href="https://jvns.ca/blog/2013/11/12/day-26-trying-to-describe-the-tcp-state-machine/" title="Previous Post: Day 26: Trying to describe the TCP state machine in a readable way. Failing.">Day 26: Trying to describe the TCP state machine in a readable way. Failing.</a>
+  
+</p>
+</footer>
+</article>
+</div>
+
+</div>
+</div>
+<nav role="navigation" class="footer-nav"> <a href="/">Archives</a>
+</nav>
+<footer role="contentinfo"><span class="credit">&copy; 2016 Polina Soshnin.
+</footer>
+</div>
+</body>
+</html>
+

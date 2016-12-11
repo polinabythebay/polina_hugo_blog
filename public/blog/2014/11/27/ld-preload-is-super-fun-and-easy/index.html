@@ -1,0 +1,162 @@
+
+<!DOCTYPE html>
+
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8">
+<title>LD_PRELOAD is super fun. And easy! - Polina Soshnin</title>
+<meta name="author" content="Julia Evans">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="description" content="LD_PRELOAD is super fun. And easy!">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="https://jvns.ca/blog/2014/11/27/ld-preload-is-super-fun-and-easy/">
+<link href="/favicon.ico" rel="icon">
+<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+<link href="/atom.xml" rel="alternate" title="Julia Evans" type="application/atom+xml">
+ 
+<link href="https://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='https://fonts.googleapis.com/css?family=Montserrat:700,400' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Alegreya:400,900,700' rel='stylesheet' type='text/css'>
+</head>
+<body>
+<div id="wrap">
+<header role="banner">
+<hgroup>
+<h1><a href="/">Polina Soshnin</a></h1>
+</hgroup>
+<ul class="header-links">
+<span><li><a href="/about">About</a></li>
+<li><a href="/projects">Projects</a></li></span>
+    <li><a href="https://github.com/polinadotio">Github</a></li></span>
+    <li><a href="https://www.linkedin.com/in/polinasoshnin">LinkedIn</a></li></span>
+</ul>
+</header>
+<nav role="navigation" class="header-nav"><ul class="main-navigation">
+<li><a href="/categories/favorite/">Favorites</a></li>
+<li><a href="/zines">Zines</a></li>
+</ul>
+</nav>
+<div id="main">
+<div id="content">
+
+<div>
+<article class="hentry" role="article">
+<header>
+<h1 class="entry-title">LD_PRELOAD is super fun. And easy!</h1>
+
+<div class="post-tags">
+  
+  •
+  
+    <a class="post-tag" href="/categories/spytools">spytools</a> 	•
+  
+  
+</div>
+<p class="meta">
+<time datetime="2014-11-27T22:51:27" pubdate data-updated="true"></time>
+</p>
+</header>
+<div class="entry-content">
+     <p>On Monday I went to Hacker School, and as always it was the most fun
+time. I hung out with <a href="http://blog.chaselambda.com/">Chase</a> and we had
+fun with dynamic linkers!</p>
+
+<p>I&rsquo;d been hearing for a while that you can override arbitrary function
+calls in a program using an environment variable called <code>LD_PRELOAD</code>.
+But I didn&rsquo;t realize how easy it was! Chase and I started using it and
+we got it working in, like, 5 minutes!</p>
+
+<p>I googled &ldquo;LD_PRELOAD hacks&rdquo;, clicked on <a href="http://rafalcieslak.wordpress.com/2013/04/02/dynamic-linker-tricks-using-ld_preload-to-cheat-inject-features-and-investigate-programs/">Dynamic linker tricks: Using LD_PRELOAD to cheat, inject features and investigate programs</a>,
+and we were up and running.</p>
+
+<p>The first example on that page has you write a new random function that
+always returns 42.</p>
+
+<pre><code>int rand(){
+    return 42; //the most random number in the universe
+}
+</code></pre>
+
+<p>That is LITERALLY ALL THE CODE YOU HAVE TO WRITE. Then you</p>
+
+<pre><code>gcc -shared -fPIC unrandom.c -o unrandom.so
+export LD_PRELOAD=unrandom.so
+</code></pre>
+
+<p>and now every program you run will always return 42 for rand()!</p>
+
+<p></p>
+
+<p>We did a bunch of investigations into how tmux works, which was super
+fun. <a href="http://blog.chaselambda.com/2014/11/25/how-tmux-starts-up-an-adventure-with-linux-tools.html">Chase wrote it up on his blog</a>,
+and now I understand about daemonization way better.</p>
+
+<p>We very quickly ran into the question of &ldquo;okay, what if you want to call
+the original <code>printf</code>?&rdquo; from your hacked printf? That&rsquo;s also explained
+in the &ldquo;Dynamic linker tricks&rdquo; article! (in the &ldquo;Being transparent&rdquo;
+section, using <code>dlsym</code>)</p>
+
+<p>Somebody explained to me at some point that if you work for the NSA and
+you&rsquo;re trying to spy on what information a program is using internally,
+tools like LD_PRELOAD are VERY USEFUL.</p>
+
+<h3 id="how-it-works">How it works</h3>
+
+<p>There is a very wonderful
+<a href="http://lwn.net/Articles/276782/">20 part series about linkers</a> that I
+am going to keep recommending to everyone forever.</p>
+
+<p>When you start a dynamically linked program, it doesn&rsquo;t have all the
+code for the functions it needs! So what happens is:</p>
+
+<ul>
+<li>the program gets loaded into memory</li>
+<li>the dynamic linker figures out which other libraries that program
+needs to run (<code>.so</code> files)</li>
+<li>it loads them into memory, too!</li>
+<li>it connects everything up</li>
+</ul>
+
+<p><code>LD_PRELOAD</code> is an environment variable that says &ldquo;Whenever you look for
+a function name, look in me first!&ldquo;. So if you didn&rsquo;t want your program
+to be attacked like this, you could:</p>
+
+<ul>
+<li>statically link your program</li>
+<li>check for the <code>LD_PRELOAD</code> environment variable, and complain (though
+the attacker could also LD_PRELOAD the function that lets you read
+environment variables&hellip; :) )</li>
+</ul>
+
+<p>I&rsquo;m sure there will be more Exciting Stories about LD_PRELOAD for you
+all in the future, but this is all the stories I have for today.</p>
+</div>
+<footer>
+<div class="sharing">
+<a href="http://twitter.com/share" class="twitter-share-button" data-url="https://jvns.ca/blog/2014/11/27/ld-preload-is-super-fun-and-easy/" data-via="b0rk" data-counturl="https://jvns.ca/blog/2014/11/27/ld-preload-is-super-fun-and-easy/">Tweet</a>
+</div>
+<p class="meta">
+   
+    <a class="basic-alignment left" href="https://jvns.ca/blog/2014/12/10/spying-on-hadoop-with-strace/" title="Previous Post: Spying on Hadoop with strace">Spying on Hadoop with strace</a>
+  
+   
+    <a class="basic-alignment right" href="https://jvns.ca/blog/2014/11/27/pydata-nyc-i-gave-a-machine-learning-talk-yay/" title="Previous Post: PyData NYC (I gave a machine learning talk! yay!)">PyData NYC (I gave a machine learning talk! yay!)</a>
+  
+</p>
+</footer>
+</article>
+</div>
+
+</div>
+</div>
+<nav role="navigation" class="footer-nav"> <a href="/">Archives</a>
+</nav>
+<footer role="contentinfo"><span class="credit">&copy; 2016 Polina Soshnin.
+</footer>
+</div>
+</body>
+</html>
+

@@ -1,0 +1,151 @@
+
+<!DOCTYPE html>
+
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8">
+<title>Day 9: Bytecode is made of bytes! CPython isn&#39;t scary! - Polina Soshnin</title>
+<meta name="author" content="Julia Evans">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="description" content="Day 9: Bytecode is made of bytes! CPython isn&#39;t scary!">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="https://jvns.ca/blog/2013/10/14/day-9-bytecode-is-made-of-bytes/">
+<link href="/favicon.ico" rel="icon">
+<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+<link href="/atom.xml" rel="alternate" title="Julia Evans" type="application/atom+xml">
+ 
+<link href="https://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='https://fonts.googleapis.com/css?family=Montserrat:700,400' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Alegreya:400,900,700' rel='stylesheet' type='text/css'>
+</head>
+<body>
+<div id="wrap">
+<header role="banner">
+<hgroup>
+<h1><a href="/">Polina Soshnin</a></h1>
+</hgroup>
+<ul class="header-links">
+<span><li><a href="/about">About</a></li>
+<li><a href="/projects">Projects</a></li></span>
+    <li><a href="https://github.com/polinadotio">Github</a></li></span>
+    <li><a href="https://www.linkedin.com/in/polinasoshnin">LinkedIn</a></li></span>
+</ul>
+</header>
+<nav role="navigation" class="header-nav"><ul class="main-navigation">
+<li><a href="/categories/favorite/">Favorites</a></li>
+<li><a href="/zines">Zines</a></li>
+</ul>
+</nav>
+<div id="main">
+<div id="content">
+
+<div>
+<article class="hentry" role="article">
+<header>
+<h1 class="entry-title">Day 9: Bytecode is made of bytes! CPython isn&#39;t scary!</h1>
+
+<div class="post-tags">
+  
+  •
+  
+    <a class="post-tag" href="/categories/hackerschool">hackerschool</a> 	•
+  
+    <a class="post-tag" href="/categories/python">python</a> 	•
+  
+  
+</div>
+<p class="meta">
+<time datetime="2013-10-14T00:00:00" pubdate data-updated="true"></time>
+</p>
+</header>
+<div class="entry-content">
+     <p>Today I paired with one of the fantastic Hacker School facilitators,
+<a href="http://akaptur.github.io/">Allison</a>  on fixing some bugs in a bytecode
+interpreter. <a href="https://github.com/nedbat/byterun">byterun</a> is a pure python interpreter for the bytecode that
+CPython generates, written for learning &amp; fun times.</p>
+
+<p>Allison has a
+<a href="http://akaptur.github.io/blog/2013/08/14/python-bytecode-fun-with-dis/">great blog post</a>
+about how to use the <code>dis</code> module to look at
+the bytecode for a function which you should totally read.
+</p>
+
+<h2 id="a-few-things-i-learned">A few things I learned</h2>
+
+<p>The CPython interpreter is mostly in one 3,500 file called <code>ceval.c</code> (<a href="https://github.com/python/cpython/blob/master/Python/ceval.c">see it on github!</a>). The main part of this file is a 2,000-line switch statement &ndash; <code>switch(opcode) {...</code>. Ack.</p>
+
+<p>But! This file is surprisingly not-scary. Or Allison is just amazing at making
+things seem not scary. So for example there&rsquo;s a <code>BINARY_SUBTRACT</code> opcode
+which, well, subtracts things.</p>
+
+<p>Here&rsquo;s the actual for serious C code that handles this:</p>
+
+<pre><code>TARGET(BINARY_SUBTRACT) {
+    PyObject *right = POP();
+    PyObject *left = TOP();
+    PyObject *diff = PyNumber_Subtract(left, right);
+    Py_DECREF(right);
+    Py_DECREF(left);
+    SET_TOP(diff);
+    if (diff == NULL)
+        goto error;
+    DISPATCH();
+}
+</code></pre>
+
+<p>{:lang=&lsquo;c&rsquo;}</p>
+
+<p>So, what does this do?</p>
+
+<ol>
+<li>Get the arguments off the stack</li>
+<li>Subtract them by looking up <code>left.__sub__(right)</code></li>
+<li>Decrease the number of references to <code>left</code> and <code>right</code> for garbage collection reasons</li>
+<li>Put the result on the stack</li>
+<li>If <code>__add__</code> doesn&rsquo;t return anything, throw an exception</li>
+<li><code>DISPATCH()</code>, which basically just means &ldquo;go to the next instruction&rdquo;</li>
+</ol>
+
+<p>I could TOTALLY WRITE THAT.</p>
+
+<p>We spent some time reading the C code that deals with exception handling in
+Python. It was pretty confusing, but I learned that you can do <code>raise
+ValueError from Exception</code> to set the cause of an exception.</p>
+
+<p>Basically the lesson here is</p>
+
+<ol>
+<li>Allison is the best. Pairing with her on <a href="https://github.com/nedbat/byterun">byterun</a> is the most fun thing</li>
+<li>It&rsquo;s actually possible to read the C code that runs Python!</li>
+<li>Bytecode is made of bytes. Like, there are less than 256 instructions and each one is a byte. I did not realize this until today. Laugh all you want =D</li>
+</ol>
+</div>
+<footer>
+<div class="sharing">
+<a href="http://twitter.com/share" class="twitter-share-button" data-url="https://jvns.ca/blog/2013/10/14/day-9-bytecode-is-made-of-bytes/" data-via="b0rk" data-counturl="https://jvns.ca/blog/2013/10/14/day-9-bytecode-is-made-of-bytes/">Tweet</a>
+</div>
+<p class="meta">
+   
+    <a class="basic-alignment left" href="https://jvns.ca/blog/2013/10/16/day-11-how-does-gzip-work/" title="Previous Post: Day 11: How does gzip work?">Day 11: How does gzip work?</a>
+  
+   
+    <a class="basic-alignment right" href="https://jvns.ca/blog/2013/10/12/day-8-julia-writes-julia-and-open-source/" title="Previous Post: Day 8: Julia writes Julia! And remembers that open source is hard.">Day 8: Julia writes Julia! And remembers that open source is hard.</a>
+  
+</p>
+</footer>
+</article>
+</div>
+
+</div>
+</div>
+<nav role="navigation" class="footer-nav"> <a href="/">Archives</a>
+</nav>
+<footer role="contentinfo"><span class="credit">&copy; 2016 Polina Soshnin.
+</footer>
+</div>
+</body>
+</html>
+

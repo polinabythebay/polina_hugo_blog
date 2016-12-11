@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8">
+<title>I/O matters. - Polina Soshnin</title>
+<meta name="author" content="Julia Evans">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="description" content="I/O matters.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="https://jvns.ca/blog/2016/03/23/io-matters/">
+<link href="/favicon.ico" rel="icon">
+<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+<link href="/atom.xml" rel="alternate" title="Julia Evans" type="application/atom+xml">
+ 
+<link href="https://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='https://fonts.googleapis.com/css?family=Montserrat:700,400' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Alegreya:400,900,700' rel='stylesheet' type='text/css'>
+</head>
+<body>
+<div id="wrap">
+<header role="banner">
+<hgroup>
+<h1><a href="/">Polina Soshnin</a></h1>
+</hgroup>
+<ul class="header-links">
+<span><li><a href="/about">About</a></li>
+<li><a href="/projects">Projects</a></li></span>
+    <li><a href="https://github.com/polinadotio">Github</a></li></span>
+    <li><a href="https://www.linkedin.com/in/polinasoshnin">LinkedIn</a></li></span>
+</ul>
+</header>
+<nav role="navigation" class="header-nav"><ul class="main-navigation">
+<li><a href="/categories/favorite/">Favorites</a></li>
+<li><a href="/zines">Zines</a></li>
+</ul>
+</nav>
+<div id="main">
+<div id="content">
+
+<div>
+<article class="hentry" role="article">
+<header>
+<h1 class="entry-title">I/O matters.</h1>
+
+<div class="post-tags">
+  
+</div>
+<p class="meta">
+<time datetime="2016-03-23T23:23:57" pubdate data-updated="true"></time>
+</p>
+</header>
+<div class="entry-content">
+     
+
+<p>Here&rsquo;s another missive from the series &ldquo;what Julia learned today at work&rdquo;.</p>
+
+<p>Today I was running a Redshift query, and it was slow. Redshift is this database-as-a-service from Amazon and so far my experience with it is that it is MAGICAL and AMAZING. You can do huge joins &amp; aggregations between huge tables and it&rsquo;s fast and it works.</p>
+
+<p>But not this query! This query was slow. I&rsquo;d been querying this table, for months and it had been slow for months. Finally I was like &ldquo;well, there has to be a reason why it&rsquo;s slow&rdquo;. I asked my awesome coworker Jeff what was up.</p>
+
+<p>Now, Redshift is a columnar database (unlike sqlite/mysql/postgres). This means that it stores the data from each column together on disk, so if you have a 900GB table, but the column you want is only 1GB of data, then you only need to read 1GB. This is amazing when you have wide tables that you only want to query a few columns from, which is the situation I&rsquo;m in most of the time.</p>
+
+<p>So, back to my table. I was querying a string column. That string column, on disk, was taking up ~100GB of space. This means that every time I queried, it had to read 100GB from disk (modulo disk caches). That&rsquo;s a lot! Jeff turned on compression and told Redshift that the column was a <code>varchar(255)</code> instead of a <code>varchar(65536)</code>. My queries got way faster.</p>
+
+<h3 id="i-o-doesn-t-go-away-because-you-re-in-the-cloud">i/o doesn&rsquo;t go away because you&rsquo;re in The Cloud</h3>
+
+<p>With these Magical Cloud Services it can sometimes be hard to remember that your data is just living on real computers somewhere, with real disks, and you&rsquo;re still bound by the normal limits of I/O. Having less data on disk will mean you have to do less I/O, and make your queries faster! That&rsquo;s how disks work =D</p>
+
+<p>This is one of these super obvious things (of <em>course</em> Magical Cloud Things are just computers and are bound by the normal laws of computers!), but I&rsquo;m happy every time I&rsquo;m reminded of it.</p>
+
+</div>
+<footer>
+<div class="sharing">
+<a href="http://twitter.com/share" class="twitter-share-button" data-url="https://jvns.ca/blog/2016/03/23/io-matters/" data-via="b0rk" data-counturl="https://jvns.ca/blog/2016/03/23/io-matters/">Tweet</a>
+</div>
+<p class="meta">
+   
+    <a class="basic-alignment left" href="https://jvns.ca/blog/2016/03/27/thread-pools-how-do-i-use-them/" title="Previous Post: Thread pools! How do I use them?">Thread pools! How do I use them?</a>
+  
+   
+    <a class="basic-alignment right" href="https://jvns.ca/blog/2016/03/20/how-do-you-do-capacity-planning/" title="Previous Post: How do you do capacity planning?">How do you do capacity planning?</a>
+  
+</p>
+</footer>
+</article>
+</div>
+
+</div>
+</div>
+<nav role="navigation" class="footer-nav"> <a href="/">Archives</a>
+</nav>
+<footer role="contentinfo"><span class="credit">&copy; 2016 Polina Soshnin.
+</footer>
+</div>
+</body>
+</html>
+

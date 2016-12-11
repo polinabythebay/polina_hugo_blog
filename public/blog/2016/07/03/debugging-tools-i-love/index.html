@@ -1,0 +1,137 @@
+
+<!DOCTYPE html>
+
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8">
+<title>Linux debugging tools I love - Polina Soshnin</title>
+<meta name="author" content="Julia Evans">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="description" content="Linux debugging tools I love">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="https://jvns.ca/blog/2016/07/03/debugging-tools-i-love/">
+<link href="/favicon.ico" rel="icon">
+<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+<link href="/atom.xml" rel="alternate" title="Julia Evans" type="application/atom+xml">
+ 
+<link href="https://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='https://fonts.googleapis.com/css?family=Montserrat:700,400' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Alegreya:400,900,700' rel='stylesheet' type='text/css'>
+</head>
+<body>
+<div id="wrap">
+<header role="banner">
+<hgroup>
+<h1><a href="/">Polina Soshnin</a></h1>
+</hgroup>
+<ul class="header-links">
+<span><li><a href="/about">About</a></li>
+<li><a href="/projects">Projects</a></li></span>
+    <li><a href="https://github.com/polinadotio">Github</a></li></span>
+    <li><a href="https://www.linkedin.com/in/polinasoshnin">LinkedIn</a></li></span>
+</ul>
+</header>
+<nav role="navigation" class="header-nav"><ul class="main-navigation">
+<li><a href="/categories/favorite/">Favorites</a></li>
+<li><a href="/zines">Zines</a></li>
+</ul>
+</nav>
+<div id="main">
+<div id="content">
+
+<div>
+<article class="hentry" role="article">
+<header>
+<h1 class="entry-title">Linux debugging tools I love</h1>
+
+<div class="post-tags">
+  
+  •
+  
+    <a class="post-tag" href="/categories/favorite">favorite</a> 	•
+  
+  
+</div>
+<p class="meta">
+<time datetime="2016-07-03T15:32:25" pubdate data-updated="true"></time>
+</p>
+</header>
+<div class="entry-content">
+     
+
+<p>I gave a talk this weekend about debugging tools I love (here are <a href="https://speakerdeck.com/jvns/systems-programming-is-for-everyone">the slides</a>, such as they are). I think of these tools like a swiss army knife &ndash; if something on your system is wrong or slow, in any programming language, knowing how to use them can really help you out. I&rsquo;ve written pretty extensively on this, but I didn&rsquo;t have a central list to refer to. So! Here&rsquo;s the list of my current favorite tools. There are only 5! I&rsquo;ve used all of them (except opensnoop) to debug actual problems.</p>
+
+<p>tcpdump and wireshark and opensnoop are also things that you can have on OS X.</p>
+
+<h3 id="strace">strace</h3>
+
+<p>A tool that traces system calls. My favorite thing. I have a bunch of posts with examples of how to use it on this blog. If you want to read what I think of it you should read the fanzine reference that you can read <a href="/blog/2015/04/15/strace-zine/">here</a>.</p>
+
+<p>strace is pretty broadly useful, but keep in mind it can really slow down your programs.</p>
+
+<p>I would be remiss if I did not mention the even-more-awesome dtrace. Colin Jones has a <a href="https://blog.8thlight.com/colin-jones/archive.html">nice introduction</a>.</p>
+
+<h3 id="dstat">dstat</h3>
+
+<p>A really simple tool that prints out how much data got sent over the network / written to disk every second. This is great when you suspect something is going on with network/disk usage and want to see what&rsquo;s happening in real time.</p>
+
+<p>There&rsquo;s also iostat and netstat and atop and a bunch of other tools, but dstat is my favorite.</p>
+
+<h3 id="tcpdump-wireshark">tcpdump + wireshark</h3>
+
+<p>For spying on network traffic. I wrote an introduction explaining how to use them in <a href="/blog/2016/03/17/tcpdump-is-amazing/">tcpdump is amazing</a>.</p>
+
+<p>When using these, it really helps to have a basic understanding of how networking works. Luckily the basics (&ldquo;what&rsquo;s the difference between IP and TCP and HTTP? what&rsquo;s a network packet?&rdquo;) are totally possible to pick up :D.</p>
+
+<h3 id="perf">perf</h3>
+
+<p>Have a C program and want to know which functions it&rsquo;s spending the most time in? <code>perf</code> is a sampling profiler for Linux that can tell you that.</p>
+
+<p><code>perf top</code> gives you a live view of which functions are running right now, just like <code>top</code>. I like to use <code>perf top</code> no matter what language my programs are written in, just to see if I can understand anything from it. Sometimes it works!</p>
+
+<p>node.js has built-in support for using perf to show you which Node function is running right now. You can also get this for JVM programs with perf-map-agent.</p>
+
+<p>Brendan Gregg&rsquo;s website has the best <a href="http://www.brendangregg.com/perf.html">introduction to perf</a> I know.</p>
+
+<p>You can use perf to generate amazing <a href="http://www.brendangregg.com/flamegraphs.html">flame graphs</a> like this:</p>
+
+<p><img src="http://jvns.ca/images/flamegraph.svg"></p>
+
+<h3 id="opensnoop">opensnoop</h3>
+
+<p>Opensnoop is a new script that you can get as of Ubuntu 16.04. It&rsquo;s a delightfully simple tool &ndash; it just shows you which files are being opened right now on your computer. And it&rsquo;s fast, unlike strace!</p>
+
+<p>opensnoop also exists on OS X and does basically the same thing.</p>
+
+<p>Go to the <a href="https://github.com/iovisor/bcc">iovisor/bcc</a> repo on github for installation instructions. It works using eBPF, which is a new thing that I will not explain yet here but Brendan Gregg has been writing about enthusiastically for some time. You don&rsquo;t need to know how it works to use it, though :).</p>
+
+</div>
+<footer>
+<div class="sharing">
+<a href="http://twitter.com/share" class="twitter-share-button" data-url="https://jvns.ca/blog/2016/07/03/debugging-tools-i-love/" data-via="b0rk" data-counturl="https://jvns.ca/blog/2016/07/03/debugging-tools-i-love/">Tweet</a>
+</div>
+<p class="meta">
+   
+    <a class="basic-alignment left" href="https://jvns.ca/blog/2016/07/14/whats-sni/" title="Previous Post: How do HTTP requests get sent to the right place?">How do HTTP requests get sent to the right place?</a>
+  
+   
+    <a class="basic-alignment right" href="https://jvns.ca/blog/2016/07/03/polyconf-2016/" title="Previous Post: PolyConf 2016">PolyConf 2016</a>
+  
+</p>
+</footer>
+</article>
+</div>
+
+</div>
+</div>
+<nav role="navigation" class="footer-nav"> <a href="/">Archives</a>
+</nav>
+<footer role="contentinfo"><span class="credit">&copy; 2016 Polina Soshnin.
+</footer>
+</div>
+</body>
+</html>
+
