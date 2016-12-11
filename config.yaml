@@ -1,13 +1,13 @@
-baseurl: https://jvns.ca
+baseurl: https://polina.io
 disablePathToLower: true
 languageCode: en-us
-title: Julia Evans
-author: Julia Evans
+title: Polina Soshnin
+author: Polina Soshnin
 theme: orange
 disableRSS: false
 rssuri: atom.xml
 author:
-  name: Julia Evans
+  name: Polina Soshnin
 taxonomies:
   category: "categories"
 ...
