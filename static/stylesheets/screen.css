@@ -144,7 +144,7 @@ li code {
 }
 a {
     text-decoration: none;
-    color: #eb1478;
+    color: #00405d;
 }
 body {
     line-height: 1.25em;
@@ -764,7 +764,7 @@ pre::-webkit-scrollbar,
 pre::-webkit-scrollbar-thumb:horizontal,
 .highlight::-webkit-scrollbar-thumb:horizontal,
 .gist-highlight::-webkit-scrollbar-thumb:horizontal {
-    background: #eb1478;
+    background: #00405d;
     -webkit-border-radius: 4px;
     border-radius: 4px;
 }
@@ -850,7 +850,7 @@ body {
     #main {
         /*border-right-width: 35px;*/
         border-right-style: solid;
-        border-right-color: #eb1478;
+        border-right-color: #00405d;
         padding-left: 35px;
         padding-right: 35px;
         -moz-border-image: url("stripes.png") 0 35 0 0 repeat;
@@ -876,7 +876,7 @@ body {
 @media screen and (min-width: 531px) {
     #wrap>header {
         /*border-left-width: 35px;*/
-        border-left-color: #eb1478;
+        border-left-color: #00405d;
         border-left-style: solid;
         -moz-border-image: url("stripes.png") 0 0 0 35 repeat;
         -webkit-border-image: url("stripes.png") 0 0 0 35 repeat;
@@ -961,7 +961,7 @@ body {
 }
 nav {
     color: white;
-    background-color: #eb1478;
+    background-color: #00405d;
     z-index: 1500;
     height: 35px;
     padding: 0.5em 35px;
@@ -1017,7 +1017,7 @@ nav ul li+li:before {
         right: -35px;
         top: 0px;
         border: 35px solid;
-        border-color: #eb1478 transparent transparent transparent;
+        border-color: #00405d transparent transparent transparent;
     }
     /*.header-nav:before {*/
         /*content: '';*/
@@ -1040,7 +1040,7 @@ nav ul li+li:before {
         right: -35px;
         bottom: 0px;
         border: 35px solid;
-        border-color: transparent transparent #eb1478 transparent;
+        border-color: transparent transparent #00405d transparent;
     }
 }
 .post-tags {
@@ -1070,7 +1070,7 @@ nav ul li+li:before {
         left: -35px;
         top: 0px;
         border: 35px solid;
-        border-color: #eb1478 transparent transparent transparent;
+        border-color: #00405d transparent transparent transparent;
     }
     .footer-nav:after {
         content: '';
@@ -1081,7 +1081,7 @@ nav ul li+li:before {
         left: -35px;
         bottom: 0px;
         border: 35px solid;
-        border-color: transparent transparent #eb1478 transparent;
+        border-color: transparent transparent #00405d transparent;
     }
 }
 article {
